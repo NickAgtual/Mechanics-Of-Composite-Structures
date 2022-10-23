@@ -10,27 +10,53 @@ for ii = 1:length(models)
 end
 
 for ii = 1:length(models)
-    
     switch ii
         case 1
+            [properties(ii).E1, ...
+             properties(ii).E2, ...
+             properties(ii).v12, ...
+             properties(ii).G12] = voigt(Ef, vf, cf, Em, vm , cm)
         case 2
+            z = 1;
         case 3
+            [properties(ii).E1, ...
+             properties(ii).E2, ...
+             properties(ii).v12, ...
+             properties(ii).G12] = hybrid(Ef, vf, cf, Em, vm, cm);
         case 4
-[properties(3).E1, ...
- properties(3).E2, ...
- properties(3).v12, ...
- properties(3).G12] = hybrid(Ef, vf, cf, Em, vm, cm);
-
-[properties(4).E1, ...
- properties(4).E2, ...
- properties(4).v12, ...
- properties(4).G12] = SFM(Ef, vf, cf, Em, vm, cm);
-
+            [properties(ii).E1, ...
+             properties(ii).E2, ...
+             properties(ii).v12, ...
+             properties(ii).G12] = SFM(Ef, vf, cf, Em, vm, cm);
+        case 5
+            z = 1;
+    end
 end
+
     % Voigt model
     function [E1, E2, v12, G12] = voigt(Ef, vf, cf, Em, vm , cm)
         
-        x = 1;
+        % Function for estimated shear modulus
+        G = @(E, v) E / (2 * (1 + v));
+        
+        % Estimated fiber shear moudulus
+        Gf = G(Ef, vf);
+        
+        % Estimated matrix shear modulus
+        Gm = G(Em, vm);
+        
+        C.m = [Em / (1 - (vm ^ 2)), (vm * Em) / (1 - (vm ^ 2)), ...
+              0; (vm * Em) / (1 - (vm ^ 2)), Em / (1 - (vm ^ 2)), ...
+              0; 0, 0, Gm];
+        C.f = [Ef / (1 - (vf ^ 2)), (vf * Ef) / (1 - (vf ^ 2)), ...
+              0; (vf * Ef) / (1 - (vf ^ 2)), Ef / (1 - (vf ^ 2)), ...
+              0; 0, 0, Gf];
+          
+        C.v = (cf .* C.f) + (cm .* C.m);
+        
+        S.v = inv(C.v);
+        
+        
      
     end
 
