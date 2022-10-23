@@ -3,12 +3,15 @@ function [properties] = modelComparison(Ef, vf, cf, Em, vm , cm)
 % Defining all models compared in this subroutine
 models = {'Voigt', 'Reuss', 'Hybrid', 'Square Fiber', 'Halpin-Tsai'};
 
+% Pupulating cell array with all model functions
 functions = {@voigt, @reuss, @hybrid, @SFM, @halpinTsai};
 
 % Populating the structure with all of the models
 for ii = 1:length(models)
+    % Assigning model names to structure
     properties(ii).model = models{ii};
     
+    % Calling model functions as storing properties in structure
     [properties(ii).E1, ...
      properties(ii).E2, ...
      properties(ii).v12, ...
@@ -60,10 +63,39 @@ end
 
     function [E1, E2, v12, G12] = reuss(Ef, vf, cf, Em, vm , cm)
         
-        E1 = 1;
-        E2 = 1;
-        v12 = 1;
-        G12 = 1;
+        % Function for estimated shear modulus
+        G = @(E, v) E / (2 * (1 + v));
+        
+        % Estimated fiber shear moudulus
+        Gf = G(Ef, vf);
+        
+        % Estimated matrix shear modulus
+        Gm = G(Em, vm);
+        
+        % Compliance matrix for matrix
+        S.m = [1 / Em, -vm / Em, 0; ...
+               -vm / Em, 1 / Em, 0; ...
+               0, 0, 1 / Gm];
+        
+        % Compliance matrix for fiber
+        S.f = [1 / Ef, -vf / Ef, 0; ...
+               -vf / Ef, 1 / Ef, 0; ...
+               0, 0, 1 / Gf];
+           
+        % Compliance matrix according to Reuss
+        S.r = (cf .* S.f) + (cm .* S.m); 
+        
+        % Reuss longitudinal modulus
+        E1 = 1 / S.r(1, 1);
+        
+        % Reuss transverse modulus
+        E2 = 1 / S.r(2, 2);
+        
+        % Reuss major Poisson's ratio
+        v12 = -S.r(1, 2) * E1;
+        
+        % Reuss shear modulus
+        G12 = 1 / S.r(3, 3);
         
     end
 
