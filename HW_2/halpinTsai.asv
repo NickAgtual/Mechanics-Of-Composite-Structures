@@ -1,7 +1,0 @@
-function [estimatedParameter] = halpinTsai(P, Pm, Pf, cf)
-
-%% Function Definition
-if P == NaN
-    
-
-end

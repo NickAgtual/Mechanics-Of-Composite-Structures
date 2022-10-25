@@ -1,6 +1,13 @@
-function [properties] = modelComparison(Ef, vf, cf, Em, vm)
+
+Ef = 73;
+vf = .22;
+Em = 3.5;
+vm = .35;
 
 %% Main Function Body
+
+% Creating range for fiber volume ratio
+cf = linspace(0, 1, 100);
 
 % Calculating matrix volume ratio
 cm = 1 - cf;
@@ -45,24 +52,28 @@ end
         C.f = [Ef / (1 - (vf ^ 2)), (vf * Ef) / (1 - (vf ^ 2)), ...
               0; (vf * Ef) / (1 - (vf ^ 2)), Ef / (1 - (vf ^ 2)), ...
               0; 0, 0, Gf];
+          
+        for jj = 1:length(cf)
         
-        % Stiffness matrix according to Voigt
-        C.v = (cf .* C.f) + (cm .* C.m);
+            % Stiffness matrix according to Voigt
+            C.v = (cf(jj) .* C.f) + (cm(jj) .* C.m);
+
+            % Compliance matrix according to Voigt
+            S.v = inv(C.v);
+
+            % Voigt longitudinal modulus
+            E1(jj) = 1 / S.v(1, 1);
+
+            % Voigt transverse modulus
+            E2(jj) = 1 / S.v(2, 2);
+
+            % Voigt major Poisson's ratio
+            v12(jj) = -S.v(2, 1) * E1(jj);
+
+            % Voigt shear modulus
+            G12(jj) = 1 /S.v(3, 3);
         
-        % Compliance matrix according to Voigt
-        S.v = inv(C.v);
-        
-        % Voigt longitudinal modulus
-        E1 = 1 / S.v(1, 1);
-        
-        % Voigt transverse modulus
-        E2 = 1 / S.v(2, 2);
-        
-        % Voigt major Poisson's ratio
-        v12 = -S.v(2, 1) * E1;
-        
-        % Voigt shear modulus
-        G12 = 1 /S.v(3, 3);
+        end
         
     end
 
@@ -87,56 +98,68 @@ end
         S.f = [1 / Ef, -vf / Ef, 0; ...
                -vf / Ef, 1 / Ef, 0; ...
                0, 0, 1 / Gf];
-           
-        % Compliance matrix according to Reuss
-        S.r = (cf .* S.f) + (cm .* S.m); 
         
-        % Reuss longitudinal modulus
-        E1 = 1 / S.r(1, 1);
-        
-        % Reuss transverse modulus
-        E2 = 1 / S.r(2, 2);
-        
-        % Reuss major Poisson's ratio
-        v12 = -S.r(1, 2) * E1;
-        
-        % Reuss shear modulus
-        G12 = 1 / S.r(3, 3);
+        for jj = 1:length(cf)
+            
+            % Compliance matrix according to Reuss
+            S.r = (cf(jj) .* S.f) + (cm(jj) .* S.m); 
+
+            % Reuss longitudinal modulus
+            E1(jj) = 1 / S.r(1, 1);
+
+            % Reuss transverse modulus
+            E2(jj) = 1 / S.r(2, 2);
+
+            % Reuss major Poisson's ratio
+            v12(jj) = -S.r(1, 2) * E1(jj);
+
+            % Reuss shear modulus
+            G12(jj) = 1 / S.r(3, 3);
+
+        end
         
     end
 
     %% Hybrid model
     function [E1, E2, v12, G12] = hybrid(Ef, vf, cf, Em, vm , cm)
         
-        % Hybirid longitudinal modulus
-        E1 = (cf * Ef) + (cm * Em);
+        for jj = 1:length(cf)
         
-        % Hybrid transverse modulus
-        E2 = 1 / (((cf / Ef) + (cm / Em)) - (((cf * cm) / (Ef * Em)) * ...
-            ((((vf * Em) - (vm * Em)) ^ 2) / ((cm * Em) + (cf * Ef)))));
+            % Hybirid longitudinal modulus
+            E1(jj) = (cf(jj) * Ef) + (cm(jj) * Em);
+            
+            % Hybrid transverse modulus
+            E2(jj) = 1 / (((cf(jj) / Ef) + (cm(jj) / Em)) - ...
+                (((cf(jj) * cm(jj)) / (Ef * Em)) * ...
+                ((((vf * Em) - (vm * Em)) ^ 2) / ...
+                ((cm(jj) * Em) + (cf(jj) * Ef)))));
+            
+            % Function for estimated shear modulus
+            G = @(E, v) E / (2 * (1 + v));
+            
+            % Estimated fiber shear moudulus
+            Gf = G(Ef, vf);
+            
+            % Estimated matrix shear modulus
+            Gm = G(Em, vm);
+            
+            % Hybrid in-palne shear modulus
+            G12(jj) = 1 / ((cf(jj) * (1 / Gf)) + (cm(jj) * (1 / Gm)));
+            
+            % Hybrid major Poisson's ratio
+            v12(jj) = (cf(jj) * vf) + (cm(jj) * vm);
         
-        % Function for estimated shear modulus
-        G = @(E, v) E / (2 * (1 + v));
-        
-        % Estimated fiber shear moudulus
-        Gf = G(Ef, vf);
-        
-        % Estimated matrix shear modulus
-        Gm = G(Em, vm);
-        
-        % Hybrid in-palne shear modulus
-        G12 = 1 / ((cf * (1 / Gf)) + (cm * (1 / Gm)));
-        
-        % Hybrid major Poisson's ratio
-        v12 = (cf * vf) + (cm * vm);
+        end
         
     end
 
     %% Square Fiber Model
     function [E1, E2, v12, G12] = SFM(Ef, vf, cf, Em, vm , cm)
+    
+        for jj = 1:length(cf)
         
         % Modified volume ratios
-        cA = sqrt(cf);
+        cA = sqrt(cf(jj));
         cB = 1 - cA;
         
         % Function for estimated shear modulus
@@ -179,18 +202,21 @@ end
         Q.SFM = (cA .* Q.h) + (cB .* Q.m);
         
         % SFM longitudinal modulus
-        E1 = ((Q.SFM(1, 1) * Q.SFM(2, 2)) - (Q.SFM(1, 2) ^ 2)) / ...
+        E1(jj) = ((Q.SFM(1, 1) * Q.SFM(2, 2)) - (Q.SFM(1, 2) ^ 2)) / ...
             Q.SFM(2, 2);
         
         % SFM transverse modulus
-        E2 = ((Q.SFM(1, 1) * Q.SFM(2, 2)) - (Q.SFM(1, 2) ^ 2)) / ...
+        E2(jj) = ((Q.SFM(1, 1) * Q.SFM(2, 2)) - (Q.SFM(1, 2) ^ 2)) / ...
             Q.SFM(1, 1);
         
         % SFM shear modulus
-        G12 = Q.SFM(3, 3);
+        G12(jj) = Q.SFM(3, 3);
         
         % SFM major Poisson's ratio
-        v12 = Q.SFM(1, 2) / Q.SFM(2, 2);
+        v12(jj) = Q.SFM(1, 2) / Q.SFM(2, 2);
+        
+        end
+        
     end
     
     %% Halpin-Tsai Model
@@ -202,5 +228,7 @@ end
         G12 = 1;
          
     end
+    
+%% Plots
 
-end
+
