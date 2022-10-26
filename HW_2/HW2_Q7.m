@@ -197,7 +197,7 @@ end
     end
 
     %% Square Fiber Model
-    function [E1, E2, v12, G12] = SFM(Ef, vf, cf, Em, vm , cm)
+    function [E1, E2, v12, G12] = SFM(Ef, vf, cf, Em, vm , ~)
     
     	% Initialzing all modulus vectors
         [E1, E2, G12, v12] = deal(zeros(1, length(cf)));
