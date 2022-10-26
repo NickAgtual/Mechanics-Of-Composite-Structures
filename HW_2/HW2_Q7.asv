@@ -156,6 +156,9 @@ end
 
     %% Hybrid model
     function [E1, E2, v12, G12] = hybrid(Ef, vf, cf, Em, vm , cm)
+    
+        % Initialzing all modulus vectors
+        [E1 E2 G12 v12] = deal(zeros(1, length(cf));
         
         for jj = 1:length(cf)
         
@@ -254,7 +257,7 @@ end
     end
     
     %% Halpin-Tsai Model
-    function [E1, E2, G12, v12] = halpinTsai(Ef, vf, cf, Em, vm , cm)
+    function [E1, E2, v12, G12] = halpinTsai(Ef, vf, cf, Em, vm , cm)
         
         % Function for estimated shear modulus
         G = @(E, v) E / (2 * (1 + v));
@@ -286,7 +289,7 @@ end
             % Halpin-Tsai v12 = voight v12
             v12(ii) = (cf(ii) * vf) + (cm(ii) * vm);
             
-            % Estimated Parameter for E2-Circular fibers-Square arra
+            % Estimated Parameter for E2-Circular fibers-Square array
             estimatedParameter.G12 = 1;
             
             % Eta for G12

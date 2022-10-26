@@ -68,6 +68,9 @@ end
     %% Voigt model
     function [E1, E2, v12, G12] = voigt(Ef, vf, cf, Em, vm , cm)
         
+         % Initialzing all modulus vectors
+        [E1, E2, G12, v12] = deal(zeros(1, length(cf)));
+    
         % Function for estimated shear modulus
         G = @(E, v) E / (2 * (1 + v));
         
@@ -113,6 +116,9 @@ end
 
     %% Reuss Model
     function [E1, E2, v12, G12] = reuss(Ef, vf, cf, Em, vm , cm)
+    
+         % Initialzing all modulus vectors
+        [E1, E2, G12, v12] = deal(zeros(1, length(cf)));
         
         % Function for estimated shear modulus
         G = @(E, v) E / (2 * (1 + v));
@@ -156,6 +162,9 @@ end
 
     %% Hybrid model
     function [E1, E2, v12, G12] = hybrid(Ef, vf, cf, Em, vm , cm)
+    
+        % Initialzing all modulus vectors
+        [E1, E2, G12, v12] = deal(zeros(1, length(cf)));
         
         for jj = 1:length(cf)
         
@@ -189,6 +198,9 @@ end
 
     %% Square Fiber Model
     function [E1, E2, v12, G12] = SFM(Ef, vf, cf, Em, vm , cm)
+    
+    	% Initialzing all modulus vectors
+        [E1, E2, G12, v12] = deal(zeros(1, length(cf)));
     
         for jj = 1:length(cf)
         
@@ -255,6 +267,9 @@ end
     
     %% Halpin-Tsai Model
     function [E1, E2, v12, G12] = halpinTsai(Ef, vf, cf, Em, vm , cm)
+    
+         % Initialzing all modulus vectors
+        [E1, E2, G12, v12] = deal(zeros(1, length(cf)));
         
         % Function for estimated shear modulus
         G = @(E, v) E / (2 * (1 + v));
