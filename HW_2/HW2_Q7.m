@@ -1,7 +1,9 @@
+clear; close all; clc
 
-Ef = 73;
-vf = .22;
-Em = 3.5;
+%% Contstituent Material Properties
+Ef = 395;
+vf = .2;
+Em = 3.7;
 vm = .35;
 
 %% Main Function Body
@@ -29,6 +31,38 @@ for ii = 1:length(models)
      properties(ii).v12, ...
      properties(ii).G12] = functions{ii}(Ef, vf, cf, Em, vm , cm);
     
+end
+
+%% Plots
+
+% Field names
+fn = fieldnames(properties);
+
+for ii = 1:length(fn) - 1
+    for jj = 1: length(models)
+        
+        % Creating new figure
+        figure(ii)
+        
+        % Plotting
+        plot(cf, properties(jj).(fn{ii + 1}), 'DisplayName', ...
+            properties(jj).model)
+        
+        % Plot properties
+        hold on
+        grid on
+        grid minor
+        
+        % Plot Descriptors
+        titleText = [fn{ii + 1}, ' vs. Fiber Volume Ratio'];
+        title(titleText, 'fontsize', ...
+            16, 'Interpreter', 'Latex')
+        xlabel('$c_f$', 'fontsize', 14, 'Interpreter', 'Latex')
+        ylabel(fn{ii + 1},...
+            'fontsize', 14, 'Interpreter', 'Latex')
+        legend('location', 'best', 'Interpreter', 'Latex')
+        
+    end
 end
 
     %% Voigt model
@@ -220,15 +254,52 @@ end
     end
     
     %% Halpin-Tsai Model
-    function [E1, E2, G12, v12] = halpinTsai(Ef, vf, cf, Em, vm , cm)
+    function [E1, E2, v12, G12] = halpinTsai(Ef, vf, cf, Em, vm , cm)
         
-        E1 = 1;
-        E2 = 1;
-        v12 = 1;
-        G12 = 1;
-         
+        % Function for estimated shear modulus
+        G = @(E, v) E / (2 * (1 + v));
+        
+        % Estimated matrix shear modulus
+        Gm = G(Em, vm);
+        
+        % Estimated fiber shear moudulus
+        Gf = G(Ef, vf);
+        
+        % Eta function
+        eta = @(Pf, Pm, ep) (Pf - Pm) / (Pf - (ep * Pm));
+        
+        for ii = 1:length(cf)
+            
+            % Halpin-Tsai E1 = Voigt E1
+            E1(ii) = (cf(ii) * Ef) + (cm(ii) * Em);
+            
+            % Estimated Parameter for E2-Circular fibers-Square arra7
+            estimatedParameter.E2 = 2;
+            
+            % Eta for E2
+            etaE2 = eta(Ef, Em, estimatedParameter.E2);
+            
+            % Halpin-Tsai E2
+            E2(ii) = (Em * (1 + (estimatedParameter.E2 * etaE2 * ...
+                cf(ii)))) / (1 - (etaE2 * cf(ii)));
+            
+            % Halpin-Tsai v12 = voight v12
+            v12(ii) = (cf(ii) * vf) + (cm(ii) * vm);
+            
+            % Estimated Parameter for E2-Circular fibers-Square array
+            estimatedParameter.G12 = 1;
+            
+            % Eta for G12
+            etaG12 = eta(Gf, Gm, estimatedParameter.G12);
+            
+            % Halpin-Tsai G12
+            G12(ii) = (Gm * (1 + (estimatedParameter.G12 * etaG12 .* ...
+                cf(ii)))) /(1 - (etaG12 * cf(ii)));
+            
+        end
+        
     end
-    
-%% Plots
+   
+
 
 

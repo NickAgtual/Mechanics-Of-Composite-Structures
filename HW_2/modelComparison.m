@@ -3,7 +3,7 @@ function [properties] = modelComparison(Ef, vf, cf, Em, vm)
 %% Main Function Body
 
 % Calculating matrix volume ratio
-cm = 1 - cf;
+cm = 1 - cf
 
 % Defining all models compared in this subroutine
 models = {'Voigt', 'Reuss', 'Hybrid', 'Square Fiber', 'Halpin-Tsai'};
@@ -194,12 +194,45 @@ end
     end
     
     %% Halpin-Tsai Model
-    function [E1, E2, G12, v12] = halpinTsai(Ef, vf, cf, Em, vm , cm)
+    function [E1, E2, v12, G12] = halpinTsai(Ef, vf, cf, Em, vm , cm)
         
-        E1 = 1;
-        E2 = 1;
-        v12 = 1;
-        G12 = 1;
+        % Function for estimated shear modulus
+        G = @(E, v) E / (2 * (1 + v));
+        
+        % Estimated matrix shear modulus
+        Gm = G(Em, vm);
+        
+        % Estimated fiber shear moudulus
+        Gf = G(Ef, vf);
+        
+        % Eta function
+        eta = @(Pf, Pm, ep) (Pf - Pm) / (Pf - (ep * Pm));
+        
+        % Halpin-Tsai E1 = Voigt E1
+        E1 = (cf * Ef) + (cm * Em);
+        
+        % Estimated Parameter for E2-Circular fibers-Square arra7
+        estimatedParameter.E2 = 2;
+        
+        % Eta for E2
+        etaE2 = eta(Ef, Em, estimatedParameter.E2);
+        
+        % Halpin-Tsai E2
+        E2 = (Em * (1 + (estimatedParameter.E2 * etaE2 * cf))) / ...
+            (1 - (etaE2 * cf));
+      
+        % Halpin-Tsai v12 = voight v12
+        v12 = (cf * vf) + (cm * vm);
+        
+        % Estimated Parameter for E2-Circular fibers-Square arra
+        estimatedParameter.G12 = 1;
+        
+        % Eta for G12
+        etaG12 = eta(Gf, Gm, estimatedParameter.G12);
+        
+        % Halpin-Tsai G12
+        G12 = (Gm * (1 + (estimatedParameter.G12 * etaG12 * cf))) / ...
+            (1 - (etaG12 * cf));
          
     end
 

@@ -1,18 +1,9 @@
-clear; close all; clc
-
-%% Contstituent Material Properties
-Ef = 395;
-vf = .2;
-Em = 3.7;
-vm = .35;
+function [properties] = modelComparison(Ef, vf, cf, Em, vm)
 
 %% Main Function Body
 
-% Creating range for fiber volume ratio
-cf = linspace(0, 1, 100);
-
 % Calculating matrix volume ratio
-cm = 1 - cf;
+cm = 1 - cf
 
 % Defining all models compared in this subroutine
 models = {'Voigt', 'Reuss', 'Hybrid', 'Square Fiber', 'Halpin-Tsai'};
@@ -31,38 +22,6 @@ for ii = 1:length(models)
      properties(ii).v12, ...
      properties(ii).G12] = functions{ii}(Ef, vf, cf, Em, vm , cm);
     
-end
-
-%% Plots
-
-% Field names
-fn = fieldnames(properties);
-
-for ii = 1:length(fn) - 1
-    for jj = 1: length(models)
-        
-        % Creating new figure
-        figure(ii)
-        
-        % Plotting
-        plot(cf, properties(jj).(fn{ii + 1}), 'DisplayName', ...
-            properties(jj).model)
-        
-        % Plot properties
-        hold on
-        grid on
-        grid minor
-        
-        % Plot Descriptors
-        titleText = [fn{ii + 1}, ' vs. Fiber Volume Ratio'];
-        title(titleText, 'fontsize', ...
-            16, 'Interpreter', 'Latex')
-        xlabel('$c_f$', 'fontsize', 14, 'Interpreter', 'Latex')
-        ylabel(fn{ii + 1},...
-            'fontsize', 14, 'Interpreter', 'Latex')
-        legend('location', 'best', 'Interpreter', 'Latex')
-        
-    end
 end
 
     %% Voigt model
@@ -86,28 +45,24 @@ end
         C.f = [Ef / (1 - (vf ^ 2)), (vf * Ef) / (1 - (vf ^ 2)), ...
               0; (vf * Ef) / (1 - (vf ^ 2)), Ef / (1 - (vf ^ 2)), ...
               0; 0, 0, Gf];
-          
-        for jj = 1:length(cf)
         
-            % Stiffness matrix according to Voigt
-            C.v = (cf(jj) .* C.f) + (cm(jj) .* C.m);
-
-            % Compliance matrix according to Voigt
-            S.v = inv(C.v);
-
-            % Voigt longitudinal modulus
-            E1(jj) = 1 / S.v(1, 1);
-
-            % Voigt transverse modulus
-            E2(jj) = 1 / S.v(2, 2);
-
-            % Voigt major Poisson's ratio
-            v12(jj) = -S.v(2, 1) * E1(jj);
-
-            % Voigt shear modulus
-            G12(jj) = 1 /S.v(3, 3);
+        % Stiffness matrix according to Voigt
+        C.v = (cf .* C.f) + (cm .* C.m);
         
-        end
+        % Compliance matrix according to Voigt
+        S.v = inv(C.v);
+        
+        % Voigt longitudinal modulus
+        E1 = 1 / S.v(1, 1);
+        
+        % Voigt transverse modulus
+        E2 = 1 / S.v(2, 2);
+        
+        % Voigt major Poisson's ratio
+        v12 = -S.v(2, 1) * E1;
+        
+        % Voigt shear modulus
+        G12 = 1 /S.v(3, 3);
         
     end
 
@@ -132,68 +87,56 @@ end
         S.f = [1 / Ef, -vf / Ef, 0; ...
                -vf / Ef, 1 / Ef, 0; ...
                0, 0, 1 / Gf];
+           
+        % Compliance matrix according to Reuss
+        S.r = (cf .* S.f) + (cm .* S.m); 
         
-        for jj = 1:length(cf)
-            
-            % Compliance matrix according to Reuss
-            S.r = (cf(jj) .* S.f) + (cm(jj) .* S.m); 
-
-            % Reuss longitudinal modulus
-            E1(jj) = 1 / S.r(1, 1);
-
-            % Reuss transverse modulus
-            E2(jj) = 1 / S.r(2, 2);
-
-            % Reuss major Poisson's ratio
-            v12(jj) = -S.r(1, 2) * E1(jj);
-
-            % Reuss shear modulus
-            G12(jj) = 1 / S.r(3, 3);
-
-        end
+        % Reuss longitudinal modulus
+        E1 = 1 / S.r(1, 1);
+        
+        % Reuss transverse modulus
+        E2 = 1 / S.r(2, 2);
+        
+        % Reuss major Poisson's ratio
+        v12 = -S.r(1, 2) * E1;
+        
+        % Reuss shear modulus
+        G12 = 1 / S.r(3, 3);
         
     end
 
     %% Hybrid model
     function [E1, E2, v12, G12] = hybrid(Ef, vf, cf, Em, vm , cm)
         
-        for jj = 1:length(cf)
+        % Hybirid longitudinal modulus
+        E1 = (cf * Ef) + (cm * Em);
         
-            % Hybirid longitudinal modulus
-            E1(jj) = (cf(jj) * Ef) + (cm(jj) * Em);
-            
-            % Hybrid transverse modulus
-            E2(jj) = 1 / (((cf(jj) / Ef) + (cm(jj) / Em)) - ...
-                (((cf(jj) * cm(jj)) / (Ef * Em)) * ...
-                ((((vf * Em) - (vm * Em)) ^ 2) / ...
-                ((cm(jj) * Em) + (cf(jj) * Ef)))));
-            
-            % Function for estimated shear modulus
-            G = @(E, v) E / (2 * (1 + v));
-            
-            % Estimated fiber shear moudulus
-            Gf = G(Ef, vf);
-            
-            % Estimated matrix shear modulus
-            Gm = G(Em, vm);
-            
-            % Hybrid in-palne shear modulus
-            G12(jj) = 1 / ((cf(jj) * (1 / Gf)) + (cm(jj) * (1 / Gm)));
-            
-            % Hybrid major Poisson's ratio
-            v12(jj) = (cf(jj) * vf) + (cm(jj) * vm);
+        % Hybrid transverse modulus
+        E2 = 1 / (((cf / Ef) + (cm / Em)) - (((cf * cm) / (Ef * Em)) * ...
+            ((((vf * Em) - (vm * Em)) ^ 2) / ((cm * Em) + (cf * Ef)))));
         
-        end
+        % Function for estimated shear modulus
+        G = @(E, v) E / (2 * (1 + v));
+        
+        % Estimated fiber shear moudulus
+        Gf = G(Ef, vf);
+        
+        % Estimated matrix shear modulus
+        Gm = G(Em, vm);
+        
+        % Hybrid in-palne shear modulus
+        G12 = 1 / ((cf * (1 / Gf)) + (cm * (1 / Gm)));
+        
+        % Hybrid major Poisson's ratio
+        v12 = (cf * vf) + (cm * vm);
         
     end
 
     %% Square Fiber Model
     function [E1, E2, v12, G12] = SFM(Ef, vf, cf, Em, vm , cm)
-    
-        for jj = 1:length(cf)
         
         % Modified volume ratios
-        cA = sqrt(cf(jj));
+        cA = sqrt(cf);
         cB = 1 - cA;
         
         % Function for estimated shear modulus
@@ -236,25 +179,22 @@ end
         Q.SFM = (cA .* Q.h) + (cB .* Q.m);
         
         % SFM longitudinal modulus
-        E1(jj) = ((Q.SFM(1, 1) * Q.SFM(2, 2)) - (Q.SFM(1, 2) ^ 2)) / ...
+        E1 = ((Q.SFM(1, 1) * Q.SFM(2, 2)) - (Q.SFM(1, 2) ^ 2)) / ...
             Q.SFM(2, 2);
         
         % SFM transverse modulus
-        E2(jj) = ((Q.SFM(1, 1) * Q.SFM(2, 2)) - (Q.SFM(1, 2) ^ 2)) / ...
+        E2 = ((Q.SFM(1, 1) * Q.SFM(2, 2)) - (Q.SFM(1, 2) ^ 2)) / ...
             Q.SFM(1, 1);
         
         % SFM shear modulus
-        G12(jj) = Q.SFM(3, 3);
+        G12 = Q.SFM(3, 3);
         
         % SFM major Poisson's ratio
-        v12(jj) = Q.SFM(1, 2) / Q.SFM(2, 2);
-        
-        end
-        
+        v12 = Q.SFM(1, 2) / Q.SFM(2, 2);
     end
     
     %% Halpin-Tsai Model
-    function [E1, E2, G12, v12] = halpinTsai(Ef, vf, cf, Em, vm , cm)
+    function [E1, E2, v12, v12] = halpinTsai(Ef, vf, cf, Em, vm , cm)
         
         % Function for estimated shear modulus
         G = @(E, v) E / (2 * (1 + v));
@@ -268,38 +208,32 @@ end
         % Eta function
         eta = @(Pf, Pm, ep) (Pf - Pm) / (Pf - (ep * Pm));
         
-        for ii = 1:length(cf)
-            
-            % Halpin-Tsai E1 = Voigt E1
-            E1(ii) = (cf(ii) * Ef) + (cm(ii) * Em);
-            
-            % Estimated Parameter for E2-Circular fibers-Square arra7
-            estimatedParameter.E2 = 2;
-            
-            % Eta for E2
-            etaE2 = eta(Ef, Em, estimatedParameter.E2);
-            
-            % Halpin-Tsai E2
-            E2(ii) = (Em * (1 + (estimatedParameter.E2 * etaE2 * ...
-                cf(ii)))) / (1 - (etaE2 * cf(ii)));
-            
-            % Halpin-Tsai v12 = voight v12
-            v12(ii) = (cf(ii) * vf) + (cm(ii) * vm);
-            
-            % Estimated Parameter for E2-Circular fibers-Square arra
-            estimatedParameter.G12 = 1;
-            
-            % Eta for G12
-            etaG12 = eta(Gf, Gm, estimatedParameter.G12);
-            
-            % Halpin-Tsai G12
-            G12(ii) = (Gm * (1 + (estimatedParameter.G12 * etaG12 .* ...
-                cf(ii)))) /(1 - (etaG12 * cf(ii)));
-            
-        end
+        % Halpin-Tsai E1 = Voigt E1
+        E1 = (cf * Ef) + (cm * Em);
         
+        % Estimated Parameter for E2-Circular fibers-Square arra7
+        estimatedParameter.E2 = 2;
+        
+        % Eta for E2
+        etaE2 = eta(Ef, Em, estimatedParameter.E2);
+        
+        % Halpin-Tsai E2
+        E2 = (Em * (1 + (estimatedParameter.E2 * etaE2 * cf))) / ...
+            (1 - (etaE2 * cf));
+      
+        % Halpin-Tsai v12 = voight v12
+        v12 = (cf * vf) + (cm * vm);
+        
+        % Estimated Parameter for E2-Circular fibers-Square arra
+        estimatedParameter.G12 = 1;
+        
+        % Eta for G12
+        etaG12 = eta(Gf, Gm, estimatedParameter.G12);
+        
+        % Halpin-Tsai G12
+        G12 = (Gm * (1 + (estimatedParameter.G12 * etaG12 * cf))) / ...
+            (1 - (etaG12 * cf));
+         
     end
-   
 
-
-
+end
