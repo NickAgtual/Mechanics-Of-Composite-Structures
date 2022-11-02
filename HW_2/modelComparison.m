@@ -206,12 +206,12 @@ end
         Gf = G(Ef, vf);
         
         % Eta function
-        eta = @(Pf, Pm, ep) (Pf - Pm) / (Pf - (ep * Pm));
+        eta = @(Pf, Pm, ep) (Pf - Pm) / (Pf + (ep * Pm));
         
         % Halpin-Tsai E1 = Voigt E1
         E1 = (cf * Ef) + (cm * Em);
         
-        % Estimated Parameter for E2-Circular fibers-Square arra7
+        % Estimated Parameter for E2-Circular fibers-Square array
         estimatedParameter.E2 = 2;
         
         % Eta for E2

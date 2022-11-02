@@ -281,7 +281,7 @@ end
         Gf = G(Ef, vf);
         
         % Eta function
-        eta = @(Pf, Pm, ep) (Pf - Pm) / (Pf - (ep * Pm));
+        eta = @(Pf, Pm, ep) (Pf - Pm) / (Pf + (ep * Pm));
         
         for ii = 1:length(cf)
             
