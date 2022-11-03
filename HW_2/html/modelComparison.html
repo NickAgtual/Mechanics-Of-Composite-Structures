@@ -1,0 +1,542 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>modelComparison</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-11-03"><meta name="DC.source" content="modelComparison.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Main Function Body</a></li><li><a href="#3">Voigt model</a></li><li><a href="#4">Reuss Model</a></li><li><a href="#5">Hybrid model</a></li><li><a href="#6">Square Fiber Model</a></li><li><a href="#7">Halpin-Tsai Model</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> [properties] = modelComparison(Ef, vf, cf, Em, vm)
+</pre><h2 id="2">Main Function Body</h2><pre class="codeinput"><span class="comment">% Calculating matrix volume ratio</span>
+cm = 1 - cf;
+
+<span class="comment">% Defining all models compared in this subroutine</span>
+models = {<span class="string">'Voigt'</span>, <span class="string">'Reuss'</span>, <span class="string">'Hybrid'</span>, <span class="string">'Square Fiber'</span>, <span class="string">'Halpin-Tsai'</span>};
+
+<span class="comment">% Pupulating cell array with all model functions</span>
+functions = {@voigt, @reuss, @hybrid, @SFM, @halpinTsai};
+
+<span class="comment">% Populating the structure with all of the models</span>
+<span class="keyword">for</span> ii = 1:length(models)
+    <span class="comment">% Assigning model names to structure</span>
+    properties(ii).model = models{ii};
+
+    <span class="comment">% Calling model functions as storing properties in structure</span>
+    [properties(ii).E1, <span class="keyword">...</span>
+     properties(ii).E2, <span class="keyword">...</span>
+     properties(ii).v12, <span class="keyword">...</span>
+     properties(ii).G12] = functions{ii}(Ef, vf, cf, Em, vm , cm);
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput error">Not enough input arguments.
+
+Error in modelComparison (line 6)
+cm = 1 - cf;
+</pre><h2 id="3">Voigt model</h2><pre class="codeinput">    <span class="keyword">function</span> [E1, E2, v12, G12] = voigt(Ef, vf, cf, Em, vm , cm)
+
+        <span class="comment">% Function for estimated shear modulus</span>
+        G = @(E, v) E / (2 * (1 + v));
+
+        <span class="comment">% Estimated fiber shear moudulus</span>
+        Gf = G(Ef, vf);
+
+        <span class="comment">% Estimated matrix shear modulus</span>
+        Gm = G(Em, vm);
+
+        <span class="comment">% Stifness matrix for matrix</span>
+        C.m = [Em / (1 - (vm ^ 2)), (vm * Em) / (1 - (vm ^ 2)), <span class="keyword">...</span>
+              0; (vm * Em) / (1 - (vm ^ 2)), Em / (1 - (vm ^ 2)), <span class="keyword">...</span>
+              0; 0, 0, Gm];
+
+        <span class="comment">% Stiffness matrix for fibers</span>
+        C.f = [Ef / (1 - (vf ^ 2)), (vf * Ef) / (1 - (vf ^ 2)), <span class="keyword">...</span>
+              0; (vf * Ef) / (1 - (vf ^ 2)), Ef / (1 - (vf ^ 2)), <span class="keyword">...</span>
+              0; 0, 0, Gf];
+
+        <span class="comment">% Stiffness matrix according to Voigt</span>
+        C.v = (cf .* C.f) + (cm .* C.m);
+
+        <span class="comment">% Compliance matrix according to Voigt</span>
+        S.v = inv(C.v);
+
+        <span class="comment">% Voigt longitudinal modulus</span>
+        E1 = 1 / S.v(1, 1);
+
+        <span class="comment">% Voigt transverse modulus</span>
+        E2 = 1 / S.v(2, 2);
+
+        <span class="comment">% Voigt major Poisson's ratio</span>
+        v12 = -S.v(2, 1) * E1;
+
+        <span class="comment">% Voigt shear modulus</span>
+        G12 = 1 /S.v(3, 3);
+
+    <span class="keyword">end</span>
+</pre><h2 id="4">Reuss Model</h2><pre class="codeinput">    <span class="keyword">function</span> [E1, E2, v12, G12] = reuss(Ef, vf, cf, Em, vm , cm)
+
+        <span class="comment">% Function for estimated shear modulus</span>
+        G = @(E, v) E / (2 * (1 + v));
+
+        <span class="comment">% Estimated fiber shear moudulus</span>
+        Gf = G(Ef, vf);
+
+        <span class="comment">% Estimated matrix shear modulus</span>
+        Gm = G(Em, vm);
+
+        <span class="comment">% Compliance matrix for matrix</span>
+        S.m = [1 / Em, -vm / Em, 0; <span class="keyword">...</span>
+               -vm / Em, 1 / Em, 0; <span class="keyword">...</span>
+               0, 0, 1 / Gm];
+
+        <span class="comment">% Compliance matrix for fiber</span>
+        S.f = [1 / Ef, -vf / Ef, 0; <span class="keyword">...</span>
+               -vf / Ef, 1 / Ef, 0; <span class="keyword">...</span>
+               0, 0, 1 / Gf];
+
+        <span class="comment">% Compliance matrix according to Reuss</span>
+        S.r = (cf .* S.f) + (cm .* S.m);
+
+        <span class="comment">% Reuss longitudinal modulus</span>
+        E1 = 1 / S.r(1, 1);
+
+        <span class="comment">% Reuss transverse modulus</span>
+        E2 = 1 / S.r(2, 2);
+
+        <span class="comment">% Reuss major Poisson's ratio</span>
+        v12 = -S.r(1, 2) * E1;
+
+        <span class="comment">% Reuss shear modulus</span>
+        G12 = 1 / S.r(3, 3);
+
+    <span class="keyword">end</span>
+</pre><h2 id="5">Hybrid model</h2><pre class="codeinput">    <span class="keyword">function</span> [E1, E2, v12, G12] = hybrid(Ef, vf, cf, Em, vm , cm)
+
+        <span class="comment">% Hybirid longitudinal modulus</span>
+        E1 = (cf * Ef) + (cm * Em);
+
+        <span class="comment">% Hybrid transverse modulus</span>
+        E2 = 1 / (((cf / Ef) + (cm / Em)) - (((cf * cm) / (Ef * Em)) * <span class="keyword">...</span>
+            ((((vf * Em) - (vm * Em)) ^ 2) / ((cm * Em) + (cf * Ef)))));
+
+        <span class="comment">% Function for estimated shear modulus</span>
+        G = @(E, v) E / (2 * (1 + v));
+
+        <span class="comment">% Estimated fiber shear moudulus</span>
+        Gf = G(Ef, vf);
+
+        <span class="comment">% Estimated matrix shear modulus</span>
+        Gm = G(Em, vm);
+
+        <span class="comment">% Hybrid in-palne shear modulus</span>
+        G12 = 1 / ((cf * (1 / Gf)) + (cm * (1 / Gm)));
+
+        <span class="comment">% Hybrid major Poisson's ratio</span>
+        v12 = (cf * vf) + (cm * vm);
+
+    <span class="keyword">end</span>
+</pre><h2 id="6">Square Fiber Model</h2><pre class="codeinput">    <span class="keyword">function</span> [E1, E2, v12, G12] = SFM(Ef, vf, cf, Em, vm , ~)
+
+        <span class="comment">% Modified volume ratios</span>
+        cA = sqrt(cf);
+        cB = 1 - cA;
+
+        <span class="comment">% Function for estimated shear modulus</span>
+        G = @(E, v) E / (2 * (1 + v));
+
+        <span class="comment">% Estimated matrix shear modulus</span>
+        Gm = G(Em, vm);
+
+        <span class="comment">% Estimated fiber shear moudulus</span>
+        Gf = G(Ef, vf);
+
+        <span class="comment">% Plain reduced stiffness matrix</span>
+        Q.m = [Em / (1 - (vm ^ 2)), (vm * Em) / (1 - (vm ^ 2)), <span class="keyword">...</span>
+              0; (vm * Em) / (1 - (vm ^ 2)), Em / (1 - (vm ^ 2)), <span class="keyword">...</span>
+              0; 0, 0, Gm];
+
+        <span class="comment">% Hybrid in-plane modulus</span>
+        hybrid.E1 = (cA * Ef) + (cB * Em);
+
+        <span class="comment">% Hybrid major Poisson's ratio</span>
+        hybrid.v12 = (cA * vf) + (cB * vm);
+
+        <span class="comment">% Hybrid shear modulus</span>
+        hybrid.G12 = 1 / ((cA / Gf) + (cB / Gm));
+
+        <span class="comment">% Hybrid transverse modulus</span>
+        hybrid.E2 = (cA / Ef) + ((cB / Em) * (1 - (vm ^ 2)));
+
+        <span class="comment">% Hybrid minor Poisson's ratio</span>
+        hybrid.v21 = (hybrid.v12 * hybrid.E2) / hybrid.E1;
+
+        <span class="comment">% Hybrid reduced stiffness matrix</span>
+        Q.h = [hybrid.E1 / (1 - (hybrid.v12 * hybrid.v21)), <span class="keyword">...</span>
+            (hybrid.v12 * hybrid.E2) / (1 - (hybrid.v12 * hybrid.v21)), <span class="keyword">...</span>
+            0; (hybrid.v12 * hybrid.E2) / <span class="keyword">...</span>
+            (1 - (hybrid.v12 * hybrid.v21)), hybrid.E2 / <span class="keyword">...</span>
+            (1 - (hybrid.v12 * hybrid.v21)), 0; 0, 0, hybrid.G12];
+
+        <span class="comment">% Reduced stiffness matrix according to SFM</span>
+        Q.SFM = (cA .* Q.h) + (cB .* Q.m);
+
+        <span class="comment">% SFM longitudinal modulus</span>
+        E1 = ((Q.SFM(1, 1) * Q.SFM(2, 2)) - (Q.SFM(1, 2) ^ 2)) / <span class="keyword">...</span>
+            Q.SFM(2, 2);
+
+        <span class="comment">% SFM transverse modulus</span>
+        E2 = ((Q.SFM(1, 1) * Q.SFM(2, 2)) - (Q.SFM(1, 2) ^ 2)) / <span class="keyword">...</span>
+            Q.SFM(1, 1);
+
+        <span class="comment">% SFM shear modulus</span>
+        G12 = Q.SFM(3, 3);
+
+        <span class="comment">% SFM major Poisson's ratio</span>
+        v12 = Q.SFM(1, 2) / Q.SFM(2, 2);
+    <span class="keyword">end</span>
+</pre><h2 id="7">Halpin-Tsai Model</h2><pre class="codeinput">    <span class="keyword">function</span> [E1, E2, v12, G12] = halpinTsai(Ef, vf, cf, Em, vm , cm)
+
+        <span class="comment">% Function for estimated shear modulus</span>
+        G = @(E, v) E / (2 * (1 + v));
+
+        <span class="comment">% Estimated matrix shear modulus</span>
+        Gm = G(Em, vm);
+
+        <span class="comment">% Estimated fiber shear moudulus</span>
+        Gf = G(Ef, vf);
+
+        <span class="comment">% Eta function</span>
+        eta = @(Pf, Pm, ep) (Pf - Pm) / (Pf + (ep * Pm));
+
+        <span class="comment">% Halpin-Tsai E1 = Voigt E1</span>
+        E1 = (cf * Ef) + (cm * Em);
+
+        <span class="comment">% Estimated Parameter for E2-Circular fibers-Square array</span>
+        estimatedParameter.E2 = 2;
+
+        <span class="comment">% Eta for E2</span>
+        etaE2 = eta(Ef, Em, estimatedParameter.E2);
+
+        <span class="comment">% Halpin-Tsai E2</span>
+        E2 = (Em * (1 + (estimatedParameter.E2 * etaE2 * cf))) / <span class="keyword">...</span>
+            (1 - (etaE2 * cf));
+
+        <span class="comment">% Halpin-Tsai v12 = voight v12</span>
+        v12 = (cf * vf) + (cm * vm);
+
+        <span class="comment">% Estimated Parameter for E2-Circular fibers-Square arra</span>
+        estimatedParameter.G12 = 1;
+
+        <span class="comment">% Eta for G12</span>
+        etaG12 = eta(Gf, Gm, estimatedParameter.G12);
+
+        <span class="comment">% Halpin-Tsai G12</span>
+        G12 = (Gm * (1 + (estimatedParameter.G12 * etaG12 * cf))) / <span class="keyword">...</span>
+            (1 - (etaG12 * cf));
+
+    <span class="keyword">end</span>
+</pre><pre class="codeinput"><span class="keyword">end</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function [properties] = modelComparison(Ef, vf, cf, Em, vm)
+
+%% Main Function Body
+
+% Calculating matrix volume ratio
+cm = 1 - cf;
+
+% Defining all models compared in this subroutine
+models = {'Voigt', 'Reuss', 'Hybrid', 'Square Fiber', 'Halpin-Tsai'};
+
+% Pupulating cell array with all model functions
+functions = {@voigt, @reuss, @hybrid, @SFM, @halpinTsai};
+
+% Populating the structure with all of the models
+for ii = 1:length(models)
+    % Assigning model names to structure
+    properties(ii).model = models{ii};
+    
+    % Calling model functions as storing properties in structure
+    [properties(ii).E1, ...
+     properties(ii).E2, ... 
+     properties(ii).v12, ...
+     properties(ii).G12] = functions{ii}(Ef, vf, cf, Em, vm , cm);
+    
+end
+
+    %% Voigt model
+    function [E1, E2, v12, G12] = voigt(Ef, vf, cf, Em, vm , cm)
+        
+        % Function for estimated shear modulus
+        G = @(E, v) E / (2 * (1 + v));
+        
+        % Estimated fiber shear moudulus
+        Gf = G(Ef, vf);
+        
+        % Estimated matrix shear modulus
+        Gm = G(Em, vm);
+        
+        % Stifness matrix for matrix
+        C.m = [Em / (1 - (vm ^ 2)), (vm * Em) / (1 - (vm ^ 2)), ...
+              0; (vm * Em) / (1 - (vm ^ 2)), Em / (1 - (vm ^ 2)), ...
+              0; 0, 0, Gm];
+          
+        % Stiffness matrix for fibers
+        C.f = [Ef / (1 - (vf ^ 2)), (vf * Ef) / (1 - (vf ^ 2)), ...
+              0; (vf * Ef) / (1 - (vf ^ 2)), Ef / (1 - (vf ^ 2)), ...
+              0; 0, 0, Gf];
+        
+        % Stiffness matrix according to Voigt
+        C.v = (cf .* C.f) + (cm .* C.m);
+        
+        % Compliance matrix according to Voigt
+        S.v = inv(C.v);
+        
+        % Voigt longitudinal modulus
+        E1 = 1 / S.v(1, 1);
+        
+        % Voigt transverse modulus
+        E2 = 1 / S.v(2, 2);
+        
+        % Voigt major Poisson's ratio
+        v12 = -S.v(2, 1) * E1;
+        
+        % Voigt shear modulus
+        G12 = 1 /S.v(3, 3);
+        
+    end
+
+    %% Reuss Model
+    function [E1, E2, v12, G12] = reuss(Ef, vf, cf, Em, vm , cm)
+        
+        % Function for estimated shear modulus
+        G = @(E, v) E / (2 * (1 + v));
+        
+        % Estimated fiber shear moudulus
+        Gf = G(Ef, vf);
+        
+        % Estimated matrix shear modulus
+        Gm = G(Em, vm);
+        
+        % Compliance matrix for matrix
+        S.m = [1 / Em, -vm / Em, 0; ...
+               -vm / Em, 1 / Em, 0; ...
+               0, 0, 1 / Gm];
+        
+        % Compliance matrix for fiber
+        S.f = [1 / Ef, -vf / Ef, 0; ...
+               -vf / Ef, 1 / Ef, 0; ...
+               0, 0, 1 / Gf];
+           
+        % Compliance matrix according to Reuss
+        S.r = (cf .* S.f) + (cm .* S.m); 
+        
+        % Reuss longitudinal modulus
+        E1 = 1 / S.r(1, 1);
+        
+        % Reuss transverse modulus
+        E2 = 1 / S.r(2, 2);
+        
+        % Reuss major Poisson's ratio
+        v12 = -S.r(1, 2) * E1;
+        
+        % Reuss shear modulus
+        G12 = 1 / S.r(3, 3);
+        
+    end
+
+    %% Hybrid model
+    function [E1, E2, v12, G12] = hybrid(Ef, vf, cf, Em, vm , cm)
+        
+        % Hybirid longitudinal modulus
+        E1 = (cf * Ef) + (cm * Em);
+        
+        % Hybrid transverse modulus
+        E2 = 1 / (((cf / Ef) + (cm / Em)) - (((cf * cm) / (Ef * Em)) * ...
+            ((((vf * Em) - (vm * Em)) ^ 2) / ((cm * Em) + (cf * Ef)))));
+        
+        % Function for estimated shear modulus
+        G = @(E, v) E / (2 * (1 + v));
+        
+        % Estimated fiber shear moudulus
+        Gf = G(Ef, vf);
+        
+        % Estimated matrix shear modulus
+        Gm = G(Em, vm);
+        
+        % Hybrid in-palne shear modulus
+        G12 = 1 / ((cf * (1 / Gf)) + (cm * (1 / Gm)));
+        
+        % Hybrid major Poisson's ratio
+        v12 = (cf * vf) + (cm * vm);
+        
+    end
+
+    %% Square Fiber Model
+    function [E1, E2, v12, G12] = SFM(Ef, vf, cf, Em, vm , ~)
+        
+        % Modified volume ratios
+        cA = sqrt(cf);
+        cB = 1 - cA;
+        
+        % Function for estimated shear modulus
+        G = @(E, v) E / (2 * (1 + v));
+        
+        % Estimated matrix shear modulus
+        Gm = G(Em, vm);
+        
+        % Estimated fiber shear moudulus
+        Gf = G(Ef, vf);
+        
+        % Plain reduced stiffness matrix
+        Q.m = [Em / (1 - (vm ^ 2)), (vm * Em) / (1 - (vm ^ 2)), ...
+              0; (vm * Em) / (1 - (vm ^ 2)), Em / (1 - (vm ^ 2)), ...
+              0; 0, 0, Gm];
+          
+        % Hybrid in-plane modulus
+        hybrid.E1 = (cA * Ef) + (cB * Em);
+        
+        % Hybrid major Poisson's ratio
+        hybrid.v12 = (cA * vf) + (cB * vm);
+        
+        % Hybrid shear modulus
+        hybrid.G12 = 1 / ((cA / Gf) + (cB / Gm));
+        
+        % Hybrid transverse modulus
+        hybrid.E2 = (cA / Ef) + ((cB / Em) * (1 - (vm ^ 2)));
+        
+        % Hybrid minor Poisson's ratio 
+        hybrid.v21 = (hybrid.v12 * hybrid.E2) / hybrid.E1;
+        
+        % Hybrid reduced stiffness matrix
+        Q.h = [hybrid.E1 / (1 - (hybrid.v12 * hybrid.v21)), ...
+            (hybrid.v12 * hybrid.E2) / (1 - (hybrid.v12 * hybrid.v21)), ...
+            0; (hybrid.v12 * hybrid.E2) / ...
+            (1 - (hybrid.v12 * hybrid.v21)), hybrid.E2 / ...
+            (1 - (hybrid.v12 * hybrid.v21)), 0; 0, 0, hybrid.G12];
+        
+        % Reduced stiffness matrix according to SFM
+        Q.SFM = (cA .* Q.h) + (cB .* Q.m);
+        
+        % SFM longitudinal modulus
+        E1 = ((Q.SFM(1, 1) * Q.SFM(2, 2)) - (Q.SFM(1, 2) ^ 2)) / ...
+            Q.SFM(2, 2);
+        
+        % SFM transverse modulus
+        E2 = ((Q.SFM(1, 1) * Q.SFM(2, 2)) - (Q.SFM(1, 2) ^ 2)) / ...
+            Q.SFM(1, 1);
+        
+        % SFM shear modulus
+        G12 = Q.SFM(3, 3);
+        
+        % SFM major Poisson's ratio
+        v12 = Q.SFM(1, 2) / Q.SFM(2, 2);
+    end
+    
+    %% Halpin-Tsai Model
+    function [E1, E2, v12, G12] = halpinTsai(Ef, vf, cf, Em, vm , cm)
+        
+        % Function for estimated shear modulus
+        G = @(E, v) E / (2 * (1 + v));
+        
+        % Estimated matrix shear modulus
+        Gm = G(Em, vm);
+        
+        % Estimated fiber shear moudulus
+        Gf = G(Ef, vf);
+        
+        % Eta function
+        eta = @(Pf, Pm, ep) (Pf - Pm) / (Pf + (ep * Pm));
+        
+        % Halpin-Tsai E1 = Voigt E1
+        E1 = (cf * Ef) + (cm * Em);
+        
+        % Estimated Parameter for E2-Circular fibers-Square array
+        estimatedParameter.E2 = 2;
+        
+        % Eta for E2
+        etaE2 = eta(Ef, Em, estimatedParameter.E2);
+        
+        % Halpin-Tsai E2
+        E2 = (Em * (1 + (estimatedParameter.E2 * etaE2 * cf))) / ...
+            (1 - (etaE2 * cf));
+      
+        % Halpin-Tsai v12 = voight v12
+        v12 = (cf * vf) + (cm * vm);
+        
+        % Estimated Parameter for E2-Circular fibers-Square arra
+        estimatedParameter.G12 = 1;
+        
+        % Eta for G12
+        etaG12 = eta(Gf, Gm, estimatedParameter.G12);
+        
+        % Halpin-Tsai G12
+        G12 = (Gm * (1 + (estimatedParameter.G12 * etaG12 * cf))) / ...
+            (1 - (etaG12 * cf));
+         
+    end
+
+end
+
+##### SOURCE END #####
+--></body></html>
