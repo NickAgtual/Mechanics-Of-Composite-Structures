@@ -57,6 +57,4 @@ moduli.G12 = Q.SFM(3, 3);
 % SFM major Poisson's ratio
 moduli.v12 = Q.SFM(1, 2) / Q.SFM(2, 2);
 
-
-
 end
