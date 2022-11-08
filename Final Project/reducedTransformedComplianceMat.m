@@ -1,4 +1,4 @@
-function [Sbar] = reducedTransformedComplianceMat(S, ss)
+function [Sbar, Tsigma] = reducedTransformedComplianceMat(S, ss)
 
 
 % Initializing Te and Qbar matrix
