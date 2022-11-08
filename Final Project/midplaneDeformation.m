@@ -1,4 +1,5 @@
-function [deformationAtMidplane] = midplaneDeformation(loading, Qbar, t, ss)
+function [deformationAtMidplane, z] = midplaneDeformation(...
+    loading, Qbar, t, ss)
 
 z = [-.254 -.127 0 .127 .254] * 10 ^ -3;
 

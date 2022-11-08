@@ -23,6 +23,10 @@ ss = [0 0 90 90]; % Stackup sequence
 
 [Qbar] = reducedTransformedStiffnessMat(moduli, t);
 
-[deformationAtMidplane] = midplaneDeformation(loading, Qbar, t, ss);
+[deformationAtMidplane, z] = midplaneDeformation(loading, Qbar, t, ss);
+
+[globLaminaStress] = globalLaminaStress(deformationAtMidplane, Qbar, t, z);
+
+
 
 end
