@@ -1,4 +1,4 @@
-function [Qbar] = reducedTransformedStiffnessMat(moduli, t)
+function [Qbar, S] = reducedTransformedStiffnessMat(moduli, ss)
 
 %% Transformed Reduced Stiffness Matrix
 
@@ -14,17 +14,17 @@ Q = inv(S);
 % Reduced strain transformation matrix
 
 % Initializing Te and Qbar matrix
-Te = zeros(3, 3, length(t));
-Qbar = zeros(3, 3, length(t));
+Te = zeros(3, 3, length(ss));
+Qbar = zeros(3, 3, length(ss));
 
-for ii = 1:length(t)
+for ii = 1:length(ss)
     
     % Reduced strain transformation matrix
-    Te(:,:, ii) = [(cosd(t(ii)).^2) (sind(t(ii)).^2) (cosd(t(ii)) .* sind(t(ii)));
-        (sind(t(ii)).^2) (cosd(t(ii)).^2) -(cosd(t(ii)) .* sind(t(ii)));
-        (-2 .* (cosd(t(ii)) .* sind(t(ii)))) ...
-        (2 .* (cosd(t(ii)) .* sind(t(ii)))) ...
-        ((cosd(t(ii)).^2) - (sind(t(ii)).^2))];
+    Te(:,:, ii) = [(cosd(ss(ii)).^2) (sind(ss(ii)).^2) (cosd(ss(ii)) .* sind(ss(ii)));
+        (sind(ss(ii)).^2) (cosd(ss(ii)).^2) -(cosd(ss(ii)) .* sind(ss(ii)));
+        (-2 .* (cosd(ss(ii)) .* sind(ss(ii)))) ...
+        (2 .* (cosd(ss(ii)) .* sind(ss(ii)))) ...
+        ((cosd(ss(ii)).^2) - (sind(ss(ii)).^2))];
     
     Qbar(:, :, ii) = transpose(Te(:, :, ii)) * Q * Te(:, :, ii);
     

@@ -1,5 +1,5 @@
 function [locStress, globStress, locStrain, globStrain] = ...
-    transformation(stressOrStrain, state, globOrLoc,  theta, moduli)
+    transformation(globLaminaStress, ss, moduli)
 
 %% Function Definition
 
@@ -16,34 +16,6 @@ function [locStress, globStress, locStrain, globStrain] = ...
 % 3) If input is state is global, input 1, elseif input is state is local
 % input 0
 % 4) Angle between global and local coordinate system (+ CCW)
-
-%% Specifying Input Parameters
-
-% Checking whether state of stress/strain was inputted as row or col vec
-if isequal(size(state), [1, 3])
-    % If row vector, convert to column vector
-    state = state';
-elseif ~isequal(size(state), [3, 1], [1, 3])
-    % Checking for invalid stress/strain input
-    fprintf('Invalid State of Stress or Strain')
-end
-
-% Assigning user input to local/global stress/strain based on input
-if stressOrStrain == 1 && globOrLoc == 1
-    globSys.stress = state;
-    condition = 1;
-elseif stressOrStrain == 1 && globOrLoc == 0
-    locSys.stress = state;
-    condition = 2;
-elseif stressOrStrain == 0 && globOrLoc == 1
-    globSys.strain = state;
-    condition = 3;
-elseif stressOrStrain == 0 && globOrLoc == 0
-    locSys.strain = state;
-    condition = 4;
-else
-    fprintf('Invalid Input Arguments. See Function Definition for IO')
-end
 
 %% Reduced Compliance and Stiffness Matrices
 

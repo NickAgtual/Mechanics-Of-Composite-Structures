@@ -1,4 +1,4 @@
-function [deformationAtMidplane] = main()
+function [deformationAtMidplane, globLaminaStress] = main()
 
 %% INPUTS
 
@@ -21,9 +21,11 @@ ss = [0 0 90 90]; % Stackup sequence
 
 [moduli] = SFM(E1f, E2f, vf, cf, Em, vm);
 
-[Qbar] = reducedTransformedStiffnessMat(moduli, t);
+[Qbar, S] = reducedTransformedStiffnessMat(moduli, ss);
 
-[deformationAtMidplane, z] = midplaneDeformation(loading, Qbar, t, ss);
+[Sbar] = reducedTransformedComplianceMat(S, ss);
+
+[deformationAtMidplane, z] = midplaneDeformation(loading, Qbar, t);
 
 [globLaminaStress] = globalLaminaStress(deformationAtMidplane, Qbar, t, z);
 

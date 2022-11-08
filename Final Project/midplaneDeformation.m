@@ -1,13 +1,13 @@
 function [deformationAtMidplane, z] = midplaneDeformation(...
-    loading, Qbar, t, ss)
+    loading, Qbar, t)
 
+% Z location of each ply
+% Find way to automate this based on thickness
 z = [-.254 -.127 0 .127 .254] * 10 ^ -3;
-
-% Loading
-Nx = 5000;
 
 %% ABD Matrix
 
+% Initializing A, B, and D matrices
 [A, B, D] = deal(zeros(3, 3));
 
 for ii = 1:3
