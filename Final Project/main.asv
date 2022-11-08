@@ -1,0 +1,12 @@
+function [output] = main(inputs)
+
+% Inputs
+loading = [1 1 1 1 1 1]
+
+[moduli] = SFM(E1f, E2f, vf, cf, Em, vm);
+
+[Qbar] = reducedTransformedStiffnessMat(moduli);
+
+[outputs] = midplaneDeformation(loading, Qbar);
+
+end

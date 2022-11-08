@@ -1,31 +1,9 @@
-function [outputs] = midplaneDeformation(loading, Qbar)
-
-%% Material Properties
-
-% Longitudinal modulus
-prop.E1 = 140; % GPa
-
-% Transverse modulus
-prop.E2 = 10; % GPa
-
-% Poisson's Ratio
-prop.v12 = .3;
-
-% Shear modulus
-prop.G12 = 7; % GPa
-
-% Ply thickness
-prop.t = .127 * 10 ^ -3; % m
-
-% Layup sequence
-t = [0 0 90 90];
+function [deformationAtMidplane] = midplaneDeformation(loading, Qbar, t, ss)
 
 z = [-.254 -.127 0 .127 .254] * 10 ^ -3;
 
 % Loading
 Nx = 5000;
-
-
 
 %% ABD Matrix
 
@@ -53,16 +31,7 @@ end
 % Laminate stiffness matrix
 ABD = [A B;B D];
 
-% Uniaxial loading
-uniaxialLoading = [Nx 0 0]';
-
 % Deflection due to uniaxial loading
-strain.uniaxial = inv(A) * uniaxialLoading;
-
-%% Solving for Moments
-
-moments = B * strain.uniaxial;
-
-
+deformationAtMidplane = inv(ABD) * loading';
 
 end
