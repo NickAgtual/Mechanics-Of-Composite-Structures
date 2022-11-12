@@ -1,5 +1,5 @@
 function [locStress, globStress, locStrain, globStrain] = ...
-    transformation(globLaminaStress, Qbar, Sbar, Te, Tsigma)
+    transformation(globLaminaStress, Sbar, Te, Tsigma)
 
 %% Global and Local Stress and Strain
 

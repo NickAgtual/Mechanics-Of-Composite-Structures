@@ -1,6 +1,7 @@
 function [globLaminaStress] = globalLaminaStress(...
     deformationAtMidplane, Qbar, t, z)
 
+% Initializing matrix for global lamina stress
 globLaminaStress = zeros(1, 3, length(t));
 
 for ii = 1:length(t)
