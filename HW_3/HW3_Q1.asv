@@ -1,0 +1,30 @@
+%% HW3 Q1
+clear; clc; close all;
+
+%% Material Properties
+
+% Longitudinal modulus
+prop.E1 = 147; % GPa
+
+% Transverse modulus
+prop.E2 = 10.3; % GPa
+
+% Shear modulus
+prop.G12 = 7; % GPa
+
+% Poisson's ratio
+prop.v12 = .27;
+
+%% Calculating [a] Matrix
+
+% Compliance matrix
+S = [(1/ prop.E1) (-prop.v12 / prop.E1) 0;
+     (-prop.v12 / prop.E1) (1 / prop/E2) 0;
+     0 0 (1 / prop.G12)];
+ 
+% Stiffness matrix
+Q = inv(S);
+
+for ii = 1:length(layup)
+    
+    strainTransform = (cosd(layup(ii))^2 sind(layup(ii))^2 
