@@ -18,6 +18,21 @@ lamina.v12 = .23;
 % Stacking sequences
 laminate.layup = [45 90 30 0];
 
+% Thickness of lamina
+lamina.thickness = .0008; % in
+
+% Lamina coordinates within laminate
+
+z = zeros(1, length(laminate.layup) / 2);
+
+for ii = 1: length(laminate.layup) / 2
+    
+    z(ii) = lamina.thickness * ii;
+    
+end
+
+laminate.zCoord = [-z 0 z];
+
 %% 1 Calculate the A, B, D, a, b, d Matrices for the Layup [45/90/30/0]
 
 % Compliance matrix
@@ -36,7 +51,7 @@ matrices.Tepsilon = zeros(3, 3, length(laminate.layup));
 
 for ii = 1:length(laminate.layup)
     
-    % S
+    % Strain transformation matrix
     matrices.Tepsilon(:, :, ii) = [cosd(laminate.layup(ii))^2 ...
         sind(laminate.layup(ii))^2 ...
         cosd(laminate.layup(ii)) * sind(laminate.layup(ii));
@@ -47,27 +62,46 @@ for ii = 1:length(laminate.layup)
         2 * cosd(laminate.layup(ii)) * sind(laminate.layup(ii)) ...
         cosd(laminate.layup(ii))^2 - sind(laminate.layup(ii))];
     
+    % Reduced transformed stiffness matrix
     matrices.Qbar(:, :, ii) = transpose(matrices.Tepsilon(:, :, ii)) * ...
         matrices.Q * matrices.Tepsilon(:, :, ii);
                     
 end
 
 % Initializing ABD matrices
-[A, B, D] = deal(zeros(3, 3));
+[matrices.A, matrices.B, matrices.D] = deal(zeros(3, 3));
 
+% Solving for ABD matrices
 for ii = 1:3
     for jj = 1:3
-        for kk = 2:length(t)+1
+        for kk = 2:length(laminate.layup) + 1
             
-            A(ii, jj) = A(ii, jj) + (Qbar(ii, jj, kk-1) * (z(kk) - z(kk-1)));
+            matrices.A(ii, jj) = matrices.A(ii, jj) + ...
+                (matrices.Qbar(ii, jj, kk-1) * ...
+                (laminate.zCoord(kk) - laminate.zCoord(kk-1)));
             
-            B(ii, jj) = B(ii, jj) + (.5 * (Qbar(ii, jj, kk-1) * ...
-                (z(kk)^2 - z(kk-1)^2)));
+            matrices.B(ii, jj) = matrices.B(ii, jj) + ...
+                (.5 * (matrices.Qbar(ii, jj, kk-1) ...
+                * (laminate.zCoord(kk)^2 - laminate.zCoord(kk-1)^2)));
             
-            D(ii, jj) = D(ii, jj) + ((1/3) * (Qbar(ii, jj, kk-1) * ...
-                (z(kk)^3 - z(kk-1)^3)));
+            matrices.D(ii, jj) = matrices.D(ii, jj) + ((1/3) * ...
+                (matrices.Qbar(ii, jj, kk-1)...
+                 * (laminate.zCoord(kk)^3 - laminate.zCoord(kk-1)^3)));
             
         end
     end
 end
+
+% ABD matrix
+matrices.ABD = [matrices.A matrices.B; matrices.B matrices.D];
+
+% abd matrix
+matrices.abd = inv(matrices.ABD);
+
+% a matrix
+matrices.a = matrices.abd(1:3,
+% b matrix
+
+% c matrix
+
     
