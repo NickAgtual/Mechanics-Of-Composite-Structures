@@ -33,7 +33,7 @@ end
 
 laminate.zCoord = [-z 0 z];
 
-%% 1 Calculate the A, B, D, a, b, d Matrices for the Layup [45/90/30/0]
+%% 1) Calculate the A, B, D, a, b, d Matrices for the Layup [45/90/30/0]
 
 % Compliance matrix
 matrices.S = [(1 / lamina.E1) (-lamina.v12 / lamina.E1) 0;
@@ -107,4 +107,26 @@ matrices.b = matrices.abd(1:3, 4:end);
 % c matrix
 matrices.d = matrices.abd(4:end, 4:end);
 
+%% 2) Compute the Midplane Strains and Curvatures
+
+% Applied loads
+% 1:3 = forces (lb/in)
+% 4:6 = moments (lbin/in)
+laminate.loading = [50 0 0 10 0 -5]'; 
+
+% Midplane deformation
+laminate.midplaneDeformation = matrices.abd * laminate.loading;
+
+%% 3) Compute Local Lamina Stress and Strain 
+
+for ii = 1:length(laminate.layup)
+    
+    lamina.localStress(:, :, ii) = matrices.Qbar(:, :, ii) * ...
+        (laminate.midplaneDeformation(1: 3) + (laminate.zCoord(ii) * ...
+        laminate.midplaneDeformation(4: 6)));
+    
+    lamina.localStrain(:, :, ii) = (laminate.midplaneDeformation(1: 3)...
+        +(laminate.zCoord(ii) * laminate.midplaneDeformation(4: 6)));
+    
+end
     

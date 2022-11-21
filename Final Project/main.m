@@ -11,6 +11,13 @@ cf = .55;
 Em = 3.5;
 vm = .35;
 
+% Hygrothermal Properties
+hygrothermal.alpha = [-.5 * 10 ^ -6, 15 * 10 ^ -6, 0]; % 1/F 
+hygrothermal.beta = [0 0 0];  
+
+% Temperature and moisture conditions
+
+
 % Loading
 loading = [100 100 100 200 100 300]; % 1:3 = forces 4:6 = moments
 % Have check in place to ensure this is row vec or col vec
