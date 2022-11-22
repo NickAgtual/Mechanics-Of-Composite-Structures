@@ -19,7 +19,7 @@ hygrothermal.beta = [0 0 0];
 hygrothermal.T0 = 350;
 hygrothermla.Tf = 100;
 
-% Moisture conditions
+% M
 hygrothermal.C0 = 0;
 hygrothermal.Cf = 0;
 
@@ -39,8 +39,6 @@ ss = [0 0 90 90]; % Stackup sequence
 
 % Add Sbar to lamina struct
 [Sbar, Tsigma] = reducedTransformedComplianceMat(S, ss);
-
-% Calculating hygrothermal stresses
 
 % Create laminate strcture with deformationAtMidplane & ABD matrix
 [deformationAtMidplane, z] = midplaneDeformation(loading, Qbar, t);
