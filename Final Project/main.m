@@ -1,4 +1,4 @@
-function [deformationAtMidplane, globLaminaStress] = main()
+function [hygrothermal] = main()
 
 %% INPUTS
 
@@ -11,7 +11,7 @@ cf = .55;
 Em = 3.5;
 vm = .35;
 
-% Hygrothermal Properties
+% Global Hygrothermal Properties
 hygrothermal.alpha = [-.5 * 10 ^ -6, 15 * 10 ^ -6, 0]; % 1/F 
 hygrothermal.beta = [0 0 0];  
 
@@ -40,10 +40,11 @@ ss = [0 0 90 90]; % Stackup sequence
 % Add Sbar to lamina struct
 [Sbar, Tsigma] = reducedTransformedComplianceMat(S, ss);
 
-% Calculating hygrothermal stresses
-
 % Create laminate strcture with deformationAtMidplane & ABD matrix
 [deformationAtMidplane, z] = midplaneDeformation(loading, Qbar, t);
+
+% Calculating hygrothermal stresses
+[hygrothermal] = hygrothermalEffetcs(ss, hygrothermal, z, Te)
 
 % Add global stress to lamina struct
 [globLaminaStress] = globalLaminaStress(deformationAtMidplane, Qbar, t, z);
