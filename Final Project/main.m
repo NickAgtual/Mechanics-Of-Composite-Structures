@@ -17,7 +17,7 @@ hygrothermal.beta = [0 0 0];
 
 % Temperature conditions
 hygrothermal.T0 = 350;
-hygrothermla.Tf = 100;
+hygrothermal.Tf = 100;
 
 % Moisture conditions
 hygrothermal.C0 = 0;
@@ -41,10 +41,10 @@ ss = [0 0 90 90]; % Stackup sequence
 [Sbar, Tsigma] = reducedTransformedComplianceMat(S, ss);
 
 % Create laminate strcture with deformationAtMidplane & ABD matrix
-[deformationAtMidplane, z] = midplaneDeformation(loading, Qbar, t);
+[deformationAtMidplane, z, ABD] = midplaneDeformation(loading, Qbar, t);
 
 % Calculating hygrothermal stresses
-[hygrothermal] = hygrothermalEffetcs(ss, hygrothermal, z, Te)
+[hygrothermal] = hygrothermalEffetcs(ss, hygrothermal, z, Te, ABD, Qbar)
 
 % Add global stress to lamina struct
 [globLaminaStress] = globalLaminaStress(deformationAtMidplane, Qbar, t, z);

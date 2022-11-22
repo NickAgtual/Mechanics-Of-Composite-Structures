@@ -21,11 +21,9 @@ end
 % Initializing hygrothermal loads
 [hygrothermal.N, hygrothermal.M] = deal(zeros(3, 1));
 
-for ii = 2:length(ss) + 1
+for ii = 1:length(ss)
 
-    hygrothermal.N = hygrothermal.deltaT * (hygrothermal.N + ...
-        (Qbar(:, :, ii - 1) * hygrothermal.alphaLocal(:, :, ii - 1) ...
-        .* (z(ii) - z(ii - 1)))); % ACCOUNT FOR MOISTURE TOO
+    hygrothermal.N = hygrothermal.N 
     
 end
 
