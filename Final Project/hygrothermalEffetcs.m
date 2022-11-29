@@ -16,9 +16,9 @@ for ii = 1:length(ss)
     hygrothermal.betaLocal(:, :, ii) = Te(:, :, ii) * hygrothermal.beta';
     
     % Free strain
-    hygrothermal.freeStrain(:, :, ii) = (hygrothermal.alphaLocal(:, :, ii) .* ...
-        hygrothermal.deltaT) + (hygrothermal.betaLocal(:, :, ii) .* ...
-        hygrothermal.deltaC);
+    hygrothermal.freeStrain(:, :, ii) = ...
+        (hygrothermal.alphaLocal(:, :, ii) .* hygrothermal.deltaT) + ...
+        (hygrothermal.betaLocal(:, :, ii) .* hygrothermal.deltaC);
     
 end
 
@@ -37,6 +37,7 @@ for ii = 2:length(ss) + 1
         * hygrothermal.betaLocal(:, :, ii - 1) .* ((z(ii) ^ 2) - ...
         (z(ii - 1) ^ 2)))); % ACCOUNT FOR MOISTURE TOO
 end
+
 end
 
 
