@@ -44,7 +44,8 @@ ss = [0 0 90 90]; % Stackup sequence
 [deformationAtMidplane, z, ABD] = midplaneDeformation(loading, Qbar, t);
 
 % Calculating hygrothermal stresses
-[hygrothermal] = hygrothermalEffetcs(ss, hygrothermal, z, Te, ABD, Qbar);
+[hygrothermal] = hygrothermalEffetcs(ss, hygrothermal, z, Te, Tsigma, ...
+    ABD, Qbar);
 
 % Add global stress to lamina struct
 [globLaminaStress] = globalLaminaStress(deformationAtMidplane, Qbar, t, z);

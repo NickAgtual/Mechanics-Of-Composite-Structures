@@ -1,5 +1,5 @@
 function [hygrothermal] = ...
-    hygrothermalEffetcs(ss, hygrothermal, z, Te, Tsigma, ABD, Qbar)
+    hygrothermalEffetcs(ss, hygrothermal, z, Te, ABD, Qbar)
 
 % Temperature difference
 hygrothermal.deltaT = hygrothermal.Tf - hygrothermal.T0;
@@ -41,15 +41,8 @@ hygrothermal.globStrain = inv(ABD) * [hygrothermal.N; hygrothermal.M];
 
 % Hygrothermal global stress (lamina)
 for ii = 1:length(ss)
-    hygrothermal.globStress(:, :, ii) = Qbar(:, :, ii) * ...
-        (hygrothermal.globStrain(1:3) + (z(ii) * ...
-        hygrothermal.globStrain(4:end)) - ...
-        hygrothermal.freeStrain(:, :, ii));
-    
-    hygrothermal.localStress(:, :, ii) = Tsigma(:, :, ii) * ...
-        hygrothermal.globStress(:, :, ii);
+    hygrothermal.globStress = Qbar(:, :, ii) * (
 end
-
 end
 
 
