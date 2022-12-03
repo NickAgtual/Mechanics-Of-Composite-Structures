@@ -1,9 +1,22 @@
 function [deformationAtMidplane, z, ABD] = midplaneDeformation(...
-    loading, Qbar, t)
+    loading, Qbar, ss, t)
 
 % Z location of each ply
-% Find way to automate this based on thickness
-z = [-.254 -.127 0 .127 .254] * 10 ^ -3;
+if rem(length(ss), 2) == 0
+    
+    % Creating position of each lamina based on even # ply layup
+    %Ex: [-2 -1 0 1 2]
+    idx = [(-1 * flip(1:length(ss)/2)), 0, 1:length(ss)/2];
+    
+else
+    
+    idx = [(-1 * flip(1:floor(length(ss)/2))), -.5, .5, ...
+        1:floor(length(ss)/2)];
+    
+end
+
+% z-coordinate
+z = idx * t;
 
 %% ABD Matrix
 
@@ -12,7 +25,7 @@ z = [-.254 -.127 0 .127 .254] * 10 ^ -3;
 
 for ii = 1:3
     for jj = 1:3
-        for kk = 1:length(t)
+        for kk = 1:length(ss)
             
             A(ii, jj) = A(ii, jj) + (Qbar(ii, jj, kk) * ...
                 (z(kk + 1) - z(kk)));

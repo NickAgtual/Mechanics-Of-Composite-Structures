@@ -26,8 +26,8 @@ hygrothermal.Cf = 0;
 loading = [100 100 100 200 100 300]; % 1:3 = forces 4:6 = moments
 % Have check in place to ensure this is row vec or col vec
 
-t = [.1 .1 .1 .1]; % Laminae thickness
-ss = [0 0 90 90]; % Stackup sequence
+t = .1; % Laminae thickness
+ss = [0 30 -30 -30 30 30]; % Stackup sequence
 
 %% Main Code Body
 
@@ -42,11 +42,11 @@ ss = [0 0 90 90]; % Stackup sequence
 [Sbar, Tsigma] = reducedTransformedComplianceMat(S, ss);
 
 % Create laminate strcture with deformationAtMidplane & ABD matrix
-[deformationAtMidplane, z, ABD] = midplaneDeformation(loading, Qbar, t);
+[deformationAtMidplane, z, ABD] = midplaneDeformation(loading, Qbar, ss, t);
 
 % Add global stress to lamina struct
 [globLaminaStress, zMod] = globalLaminaStress(deformationAtMidplane, ...
-    Qbar, t, z);
+    Qbar,z, ss);
 
 % Add all remaining stress & strain to lamina struct
 [laminaStressStrain] = transformation(globLaminaStress, Sbar, Tepsilon, ...

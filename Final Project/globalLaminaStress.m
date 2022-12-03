@@ -1,13 +1,13 @@
 function [globLaminaStress, zMod] = globalLaminaStress(...
-    deformationAtMidplane, Qbar, t, z)
+    deformationAtMidplane, Qbar, z, ss)
 
 % Initializing matrix for global lamina stress
-globLaminaStress = zeros(1, 3, length(t));
+globLaminaStress = zeros(1, 3, length(ss));
 
 % Modified z-coord mat without 0 position
 zMod = z(z ~= 0);
 
-for ii = 1:length(t)
+for ii = 1:length(ss)
     
     % Global stress in lamina
     globLaminaStress(:, :, ii) = ...
