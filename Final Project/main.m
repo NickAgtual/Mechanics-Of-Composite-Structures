@@ -12,8 +12,7 @@ Em = 3.5;
 vm = .35;
 
 % Global Hygrothermal Properties
-hygrothermal.alpha = [-.5 * 10 ^ -6, 15 * 10 ^ -6, 0]; % 1/F 
-hygrothermal.beta = [0 0 0];  
+hygrothermal.alpha = [-.5 * 10 ^ -6, 15 * 10 ^ -6, 0]; % 1/F  
 
 % Temperature conditions
 hygrothermal.T0 = 350;
@@ -32,10 +31,12 @@ ss = [0 0 90 90]; % Stackup sequence
 
 %% Main Code Body
 
+% Calculating lamina properties from micromechanical properties
+% Utilizing SFM
 [moduli] = SFM(E1f, E2f, vf, cf, Em, vm);
 
 % Create Lamina strct with Qbar
-[Qbar, S, Te] = reducedTransformedStiffnessMat(moduli, ss);
+[Qbar, S, Tepsilon] = reducedTransformedStiffnessMat(moduli, ss);
 
 % Add Sbar to lamina struct
 [Sbar, Tsigma] = reducedTransformedComplianceMat(S, ss);
@@ -43,16 +44,16 @@ ss = [0 0 90 90]; % Stackup sequence
 % Create laminate strcture with deformationAtMidplane & ABD matrix
 [deformationAtMidplane, z, ABD] = midplaneDeformation(loading, Qbar, t);
 
-% Calculating hygrothermal stresses
-[hygrothermal] = hygrothermalEffetcs(ss, hygrothermal, z, Te, Tsigma, ...
-    ABD, Qbar);
-
 % Add global stress to lamina struct
 [globLaminaStress] = globalLaminaStress(deformationAtMidplane, Qbar, t, z);
 
 % Add all remaining stress & strain to lamina struct
-[laminaStressStrain] = transformation(globLaminaStress, Sbar, Te, Tsigma);
+[laminaStressStrain] = transformation(globLaminaStress, Sbar, Tepsilon, ...
+    Tsigma);
 
+% Calculating hygrothermal stresses
+[hygrothermal] = hygrothermalEffetcs(ss, hygrothermal, z, Tepsilon, ...
+    Tsigma, ABD, Qbar);
 
 
 end
