@@ -1,4 +1,4 @@
-function [hygrothermal] = main()
+function [hygrothermal, laminaStressStrain] = main()
 
 %% INPUTS
 
@@ -26,7 +26,7 @@ hygrothermal.Cf = 0;
 loading = [100 100 100 200 100 300]; % 1:3 = forces 4:6 = moments
 % Have check in place to ensure this is row vec or col vec
 
-t = [.1 .1 .1]; % Laminae thickness
+t = [.1 .1 .1 .1]; % Laminae thickness
 ss = [0 0 90 90]; % Stackup sequence
 
 %% Main Code Body
@@ -45,7 +45,8 @@ ss = [0 0 90 90]; % Stackup sequence
 [deformationAtMidplane, z, ABD] = midplaneDeformation(loading, Qbar, t);
 
 % Add global stress to lamina struct
-[globLaminaStress] = globalLaminaStress(deformationAtMidplane, Qbar, t, z);
+[globLaminaStress, zMod] = globalLaminaStress(deformationAtMidplane, ...
+    Qbar, t, z);
 
 % Add all remaining stress & strain to lamina struct
 [laminaStressStrain] = transformation(globLaminaStress, Sbar, Tepsilon, ...
@@ -53,7 +54,7 @@ ss = [0 0 90 90]; % Stackup sequence
 
 % Calculating hygrothermal stresses
 [hygrothermal] = hygrothermalEffetcs(ss, hygrothermal, z, Tepsilon, ...
-    Tsigma, ABD, Qbar);
+    Tsigma, ABD, Qbar, zMod);
 
 
 end

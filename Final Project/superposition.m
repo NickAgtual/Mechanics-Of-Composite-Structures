@@ -1,4 +1,7 @@
-function [out] = superposition(in)
+function [totalStressStrain] = superposition(laminaStressStrain, ...
+    hygrothermal)
+
+
 
 end
 
