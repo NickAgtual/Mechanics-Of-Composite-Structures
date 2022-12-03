@@ -1,4 +1,4 @@
-function [hygrothermal, laminaStressStrain, superimposedParam] = main()
+function [hygrothermal, laminaStressStrain] = main()
 
 %% INPUTS
 
@@ -55,9 +55,6 @@ ss = [0 0 90 90]; % Stackup sequence
 % Calculating hygrothermal stresses
 [hygrothermal] = hygrothermalEffetcs(ss, hygrothermal, z, Tepsilon, ...
     Tsigma, ABD, Qbar, zMod);
-
-% Superimposing stress and strain
-[superimposedParam] = superposition(laminaStressStrain, hygrothermal);
 
 
 

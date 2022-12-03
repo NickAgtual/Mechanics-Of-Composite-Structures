@@ -39,27 +39,21 @@ end
 hygrothermal.N = hygrothermal.Nprelim * hygrothermal.deltaT;
 hygrothermal.M = hygrothermal.Mprelim * hygrothermal.deltaT * .5;
 
-% Hygrothermal midplain deformation
-% Since this only accounts for temperature change, the total midplane def. 
+% Hygrothermal midplain deformation (lamina)
+% Since this only accounts for temperature change, the 
 % is equivalent to the midplain strain and curverature due to hygrothermal
 % conditions
-hygrothermal.midplaneDeformation = inv(ABD) * ...
-    [hygrothermal.N; hygrothermal.M];
+hygrothermal.globStrain = inv(ABD) * [hygrothermal.N; hygrothermal.M];
+test = hygrothermal.globStrain
 
-for ii = 1:length(ss)
-    hygrothermal.globStrain(:, :, ii) = ...
-        hygrothermal.midplaneDeformation(1:3) + ...
-        (zMod(ii) * hygrothermal.midplaneDeformation(4:end)) - ...
-        hygrothermal.freeStrain(:, :, ii);
-end
 
 % Hygrothermal stress (lamina) and local strain
 for ii = 1:length(ss)
 
     % Global Stress
     hygrothermal.globStress(:, :, ii) = Qbar(:, :, ii) * ...
-        (hygrothermal.midplaneDeformation(1:3) + (zMod(ii) * ...
-        hygrothermal.midplaneDeformation(4:end)) - ...
+        (hygrothermal.globStrain(1:3) + (zMod(ii) * ...
+        hygrothermal.globStrain(4:end)) - ...
         hygrothermal.freeStrain(:, :, ii));
     
     % Local Stress
@@ -68,8 +62,7 @@ for ii = 1:length(ss)
     
     % Local strain
     hygrothermal.locStrain(:, :, ii) = Tepsilon(:, :, ii) * ...
-        hygrothermal.globStrain(:, :, ii);
-    
+        hygrothermal.globStrain';
 end
 
 end
