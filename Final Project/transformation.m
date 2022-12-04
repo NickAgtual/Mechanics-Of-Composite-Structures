@@ -1,5 +1,5 @@
 function [laminaStressStrain] = ...
-    transformation(globLaminaStress, Sbar, Te, Tsigma)
+    transformation(globLaminaStress, Sbar, Tepsilon, Tsigma)
 
 %% Global and Local Stress and Strain
 
@@ -17,7 +17,7 @@ for ii = 1:size(globLaminaStress, 3)
         laminaStressStrain.globStress(:, :, ii);
     
     % Local state of strain
-    laminaStressStrain.locStrain(:, :, ii) = Te(:, :, ii) * ...
+    laminaStressStrain.locStrain(:, :, ii) = Tepsilon(:, :, ii) * ...
         laminaStressStrain.globStrain(:, :, ii);
     
 end
