@@ -5,11 +5,13 @@ function [deformationAtMidplane, z, ABD] = midplaneDeformation(...
 if rem(length(ss), 2) == 0
     
     % Creating position of each lamina based on even # ply layup
-    %Ex: [-2 -1 0 1 2]
+    % Ex: [-2 -1 0 1 2]
     idx = [(-1 * flip(1:length(ss)/2)), 0, 1:length(ss)/2];
     
 else
     
+    % Creating position of each lamina based on even # ply layup
+    % Ex: [-2 -1 -.5 .5 1 2]
     idx = [(-1 * flip(1:floor(length(ss)/2))), -.5, .5, ...
         1:floor(length(ss)/2)];
     
