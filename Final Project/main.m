@@ -16,7 +16,7 @@ hygrothermal.T0 = 0;
 hygrothermal.Tf = -250;
 
 % Loading
-loading = [0 0 0 0 0 0]; % 1:3 = forces 4:6 = moments
+loading = [0 10 0 8 -2 3]; % 1:3 = forces 4:6 = moments
 % Have check in place to ensure this is row vec or col vec
 
 t = .005; % Laminae thickness

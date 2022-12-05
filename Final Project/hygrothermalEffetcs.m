@@ -1,5 +1,6 @@
 function [hygrothermal] = ...
-    hygrothermalEffetcs(ss, hygrothermal, z, Tepsilon, Tsigma, ABD, Qbar, zMod)
+    hygrothermalEffetcs(ss, hygrothermal, z, Tepsilon, Tsigma, ABD, ...
+    Qbar, zMod)
 
 % Temperature difference
 hygrothermal.deltaT = hygrothermal.Tf - hygrothermal.T0;
@@ -8,7 +9,7 @@ hygrothermal.deltaT = hygrothermal.Tf - hygrothermal.T0;
 for ii = 1:length(ss)
     
     % Global hygrothermal properties
-    hygrothermal.alphaGlobal(:, :, ii) = Tepsilon(:, :, ii) * ...
+    hygrothermal.alphaGlobal(:, :, ii) = inv(Tepsilon(:, :, ii)) * ...
         hygrothermal.alpha';
     
     % Free strain
@@ -20,17 +21,17 @@ end
 %% Hygrothermal Loads
 
 % Initializing hygrothermal loads
-[hygrothermal.N, hygrothermal.M] = deal(zeros(3, 1));
+[hygrothermal.Nprelim, hygrothermal.Mprelim] = deal(zeros(3, 1));
 
 % Calculating forces and moments due to hygrothermal conditions
 for ii = 1:length(ss)
 
     % Forces (does not include mutliplication of temp diff.)
-    hygrothermal.Nprelim = (hygrothermal.N + (Qbar(:, :, ii) ...
+    hygrothermal.Nprelim = hygrothermal.Nprelim + ((Qbar(:, :, ii) ...
         * hygrothermal.alphaGlobal(:, :, ii) .* (z(ii+1) - z(ii)))); 
     
     % Moments (does not include mutliplication of temp diff.)
-    hygrothermal.Mprelim = (hygrothermal.M + (Qbar(:, :, ii) * ...
+    hygrothermal.Mprelim = hygrothermal.Mprelim + ((Qbar(:, :, ii) * ...
         hygrothermal.alphaGlobal(:, :, ii) * ((z(ii + 1) ^ 2) ...
         - (z(ii) ^ 2))));
 end
@@ -47,6 +48,7 @@ hygrothermal.midplaneDeformation = inv(ABD) * ...
     [hygrothermal.N; hygrothermal.M];
 
 for ii = 1:length(ss)
+    
     hygrothermal.globStrain(:, :, ii) = ...
         hygrothermal.midplaneDeformation(1:3) + ...
         (zMod(ii) * hygrothermal.midplaneDeformation(4:end)) - ...
