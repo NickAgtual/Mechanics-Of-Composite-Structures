@@ -29,4 +29,6 @@ for ii = 1:length(ss)
     
 end
 
+test = Qbar
+
 end

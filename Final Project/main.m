@@ -31,7 +31,8 @@ ss = [0 30 -30 -30 30 0]; % Stackup sequence
 [Sbar, Tsigma] = reducedTransformedComplianceMat(S, ss);
 
 % Create laminate strcture with deformationAtMidplane & ABD matrix
-[deformationAtMidplane, z, ABD] = midplaneDeformation(loading, Qbar, ss, t);
+[deformationAtMidplane, z, ABD] = midplaneDeformation(loading, Qbar, ...
+    ss, t);
 
 % Add global stress to lamina struct
 [globLaminaStress, zMod] = globalLaminaStress(deformationAtMidplane, ...
@@ -48,6 +49,8 @@ ss = [0 30 -30 -30 30 0]; % Stackup sequence
 % Superimposing stress and strain
 [superimposedParam] = superposition(laminaStressStrain, hygrothermal);
 
+% Plotting global stress and strain
+stressStrainPlots(superimposedParam, zMod)
 
 
 end
