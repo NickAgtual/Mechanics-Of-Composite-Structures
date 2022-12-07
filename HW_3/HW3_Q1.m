@@ -15,7 +15,7 @@ prop.G12 = 7; % GPa
 % Poisson's ratio
 prop.v12 = .27;
 
-layup = [30 30 0 30 30];
+layup = [+30 -30 0 -30 30];
 
 %% Calculating [a] Matrix
 
@@ -38,7 +38,7 @@ for ii = 1:length(layup)
         cosd(layup(ii))^2 (-(cosd(layup(ii))^2) * (sind(layup(ii))^2)); ...
         (-2 * (cosd(layup(ii))^2) * (sind(layup(ii))^2)) ...
         (2 * (cosd(layup(ii))^2) * (sind(layup(ii))^2)) ...
-        ((cosd(layup(ii))^2) - (sind(layup(ii))^2))];
+        ((cosd(layup(ii))^2) - (sind(layup(ii))^2))^2];
     
     % Reduced transformed stiffness matrix
     Qbar(:, :, ii) = transpose(strainTransform) * Q * strainTransform;

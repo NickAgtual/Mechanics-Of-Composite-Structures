@@ -4,22 +4,22 @@ clear; clc; close all
 %% Material Properties
 
 % Longitudinal modulus
-lamina.E1 = 42.7 * 10 ^ 6; % psi
+lamina.E1 = 29.2 * 10 ^ 6; % psi
 
 % Transverse moudulus
-lamina.E2 = .92 * 10 ^ 6; % psi
+lamina.E2 = 3.15 * 10 ^ 6; % psi
 
 % In-plane shear modulus
-lamina.G12 = .71 * 10 ^ 6; % psi
+lamina.G12 = .78 * 10 ^ 6; % psi
 
 % Poisson's ratio
-lamina.v12 = .23;
+lamina.v12 = .17;
 
 % Stacking sequences
 laminate.layup = [45 90 30 0];
 
 % Thickness of lamina
-lamina.thickness = .0008; % in
+lamina.thickness = .008; % in
 
 % Lamina coordinates within laminate
 
@@ -31,7 +31,8 @@ for ii = 1: length(laminate.layup) / 2
     
 end
 
-laminate.zCoord = [-z 0 z];
+laminate.zCoord = [-flip(z) 0 z];
+laminate.zCoordMod = laminate.zCoord(laminate.zCoord ~= 0);
 
 %% 1) Calculate the A, B, D, a, b, d Matrices for the Layup [45/90/30/0]
 
@@ -60,7 +61,7 @@ for ii = 1:length(laminate.layup)
         -cosd(laminate.layup(ii)) * sind(laminate.layup(ii));
         -2 * cosd(laminate.layup(ii)) * sind(laminate.layup(ii)) ...
         2 * cosd(laminate.layup(ii)) * sind(laminate.layup(ii)) ...
-        cosd(laminate.layup(ii))^2 - sind(laminate.layup(ii))];
+        cosd(laminate.layup(ii))^2 - sind(laminate.layup(ii))^2];
     
     % Reduced transformed stiffness matrix
     matrices.Qbar(:, :, ii) = transpose(matrices.Tepsilon(:, :, ii)) * ...
@@ -122,11 +123,11 @@ laminate.midplaneDeformation = matrices.abd * laminate.loading;
 for ii = 1:length(laminate.layup)
     
     lamina.localStress(:, :, ii) = matrices.Qbar(:, :, ii) * ...
-        (laminate.midplaneDeformation(1: 3) + (laminate.zCoord(ii) * ...
+        (laminate.midplaneDeformation(1: 3) + (laminate.zCoordMod(ii) * ...
         laminate.midplaneDeformation(4: 6)));
     
     lamina.localStrain(:, :, ii) = (laminate.midplaneDeformation(1: 3)...
-        +(laminate.zCoord(ii) * laminate.midplaneDeformation(4: 6)));
+        +(laminate.zCoordMod(ii) * laminate.midplaneDeformation(4: 6)));
     
 end
     
