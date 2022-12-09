@@ -14,6 +14,7 @@ figure(1)
 % Plotting stress vs. z-coordinate
 plot(globStressVec, zMod, '-o')
 
+% Plot parameters
 grid on
 grid minor
 
@@ -33,6 +34,7 @@ figure(2)
 % Plotting strain vs. z-coordinate
 plot(globStrainVec, zMod, '-o')
 
+% Plot parameters
 grid on
 grid minor
 
