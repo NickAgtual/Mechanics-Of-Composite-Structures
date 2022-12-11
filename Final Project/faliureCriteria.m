@@ -6,121 +6,184 @@ criteria = {'maxStressCriterion', 'maxStrainCriterion', ...
 
 for ii = 1:length(criteria)
     
-    faliure(1).criterion = criteria{ii};
+    faliure(ii).criterion = criteria{ii};
     
 end
 
     function [faliure] = maxStressCriterion(strength, ...
             superimposedParam, faliure)
         
-        % Checking for fiber faliure
-        if (max(superimposedParam.locStress(1, 1, :)) >= strength.X) || ...
-                (max(supercapacitorParam.locStress(1, 2, :)) >= strength.Y)
+        for jj = 1:length(superimposedParam)
             
-            % Does laminate fail?
-            faliure(1).fail = 'Yes';
+            % Checking for fiber faliure
+            if (superimposedParam.locStress(1, 1, jj) >= strength.X) || ...
+                    (superimposedParam.locStress(1, 2, jj) >= strength.Y)
+                
+                % Does laminate fail?
+                faliure(1).fail(jj) = 'Yes';
+                
+                % What is the mode of faliure?
+                faliure(1).mode(jj) = 'Fiber Faliure';
+                
+                % Checking for matrix faliure (Method 1)
+            elseif (superimposedParam.locStress(1, 1, jj) ...
+                    <= strength.Xprime) || ...
+                    (superimposedParam.locStress(1, 2, jj) >= ...
+                    strength.Yprie)
+                
+                % Does laminate fail?
+                faliure(1).fail(jj) = 'Yes';
+                
+                % What is the mode of faliure?
+                faliure(1).mode(jj) = 'Matrix ';
+                
+            elseif abs(superimposedParam.locStress(1, 3, jj)) >= strength.S
+                
+                % Does laminate fail?
+                faliure(1).fail(jj) = 'Yes';
+                
+                % What is the mode of faliure?
+                faliure(1).mode(jj) = 'Matrix ';
+                
+            else
+                
+                % Does laminate fail?
+                faliure(1).fail(jj) = 'No';
+                
+                % What is the mode of faliure?
+                faliure(1).mode(jj) = 'N/A ';
+            end
             
-            % What is the mode of faliure?
-            faliure(1).mode = 'Fiber Faliure';
-            
-        % Checking for matrix faliure (Method 1)
-        elseif (min(superimposedParam.locStress(1, 1, :)) ...
-                <= strength.Xprime) || ...
-                (min(supercapacitorParam.locStress(1, 2, :)) >= ...
-                strength.Yprie)
-            
-            % Does laminate fail?
-            faliure(1).fail = 'Yes';
-            
-            % What is the mode of faliure?
-            faliure(1).mode = 'Matrix ';
-            
-        elseif abs(max(superimposedParam.locStress(1, 3, :))) >= strength.S
-            
-            % Does laminate fail?
-            faliure(1).fail = 'Yes';
-            
-            % What is the mode of faliure?
-            faliure(1).mode = 'Matrix ';
-            
-        end 
+        end
     end
 
     function [faliure] = maxStrainCriterion(strength, ...
             superimposedParam, faliure)
         
-        % Checking for fiber faliure
-        if (max(superimposedParam.locStrain(1, 1, :)) >= ...
-                strength.Xe) || ...
-                (max(supercapacitorParam.locStrain(1, 2, :)) >= ...
-                strength.Ye)
+        for jj = 1:length(superimposedParam)
             
-            % Does laminate fail?
-            faliure(2).fail = 'Yes';
-            
-            % What is the mode of faliure?
-            faliure(2).mode = 'Fiber Faliure';
-            
-        % Checking for matrix faliure (Method 1)
-        elseif (min(superimposedParam.locStrain(1, 1, :)) ...
-                <= strength.XePrime) || ...
-                (min(supercapacitorParam.locStrain(1, 2, :)) >= ...
-                strength.YePrie)
-            
-            % Does laminate fail?
-            faliure(2).fail = 'Yes';
-            
-            % What is the mode of faliure?
-            faliure(2).mode = 'Matrix ';
-            
-        elseif abs(max(superimposedParam.locStrain(1, 3, :))) >= ...
-                strength.Se
-            
-            % Does laminate fail?
-            faliure(2).fail = 'Yes';
-            
-            % What is the mode of faliure?
-            faliure(2).mode = 'Matrix ';
-            
-        end 
+            % Checking for fiber faliure
+            if (superimposedParam.locStrain(1, 1, jj) >= ...
+                    strength.Xe) || ...
+                    (superimposedParam.locStrain(1, 2, jj) >= ...
+                    strength.Ye)
+                
+                % Does laminate fail?
+                faliure(2).fail(jj) = 'Yes';
+                
+                % What is the mode of faliure?
+                faliure(2).mode(jj) = 'Fiber Faliure';
+                
+                % Checking for matrix faliure (Method 1)
+            elseif (superimposedParam.locStrain(1, 1, jj) ...
+                    <= strength.XePrime) || ...
+                    (superimposedParam.locStrain(1, 2, jj) >= ...
+                    strength.YePrie)
+                
+                % Does laminate fail?
+                faliure(2).fail(jj) = 'Yes';
+                
+                % What is the mode of faliure?
+                faliure(2).mode(jj) = 'Matrix ';
+                
+            elseif abs(superimposedParam.locStrain(1, 3, jj)) >= ...
+                    strength.Se
+                
+                % Does laminate fail?
+                faliure(2).fail(jj) = 'Yes';
+                
+                % What is the mode of faliure?
+                faliure(2).mode(jj) = 'Matrix ';
+                
+            else
+                
+                % Does laminate fail?
+                faliure(2).fail(jj) = 'No';
+                
+                % What is the mode of faliure?
+                faliure(2).mode(jj) = 'N/A ';
+                
+            end
+        end
     end
 
     function [out] = tsaiHillCriterion(strength, superimposedParam, ...
             faliure)
-    
+        
+        for jj = 1:length(superimposedParam)
+            
+            comparisonVar = ...
+                ((superimposedParam.locStress(1, 1, jj) / ...
+                strength.X) ^ 2) + ...
+                ((superimposedParam.locStress(1, 2, jj) / ...
+                strength.Y) ^ 2) - ...
+                ((superimposedParam.locStress(1, 1, jj) / strength.X) * ...
+                (superimposedParam.locStress(1, 2, jj) / strength.X) + ...
+                ((superimposedParam.locStress(1, 3, jj) / ...
+                strength.S) ^ 2);
+            
+            if comprisonVar >= 1
+                
+                % Does laminate fail?
+                faliure(3).fail(jj) = 'Yes';
+                
+                % What is the mode of faliure?
+                faliure(3).mode(jj) = 'Matrix ';
+                
+            else
+                
+                % Does laminate fail?
+                faliure(3).fail(jj) = 'No';
+                
+                % What is the mode of faliure?
+                faliure(3).mode(jj) = 'N/A ';
+                
+            end
+            
+            
+        end
+        
     end
 
     function [out] = tsaiWuCriterion(strength, superimposedParam, ...
             faliure)
         
-        % Tsai-Wu criterion constants
-        constants.F11 = -1 / (strength.Xprime * strength.X);
-        constants.F1 = (1 / strength.X) + (1 / strength.Xprime);
-        constants.F22 = -1 / (strength.Yprime * strength.Y);
-        constants.F2 = (1 / strength.Y) + (1 / strength.Yprime);
-        constants.F12 = 1 / (2 * strength.Xprime * strength.X);
-        constants.F66 = 1 / strength.S;
-        
-        comparisonVar = ...
-            (constants.F1 * max(superimposed.locStress(1, 1, :))) + ...
-            (constants.F2 * max(superimposed.locStress(1, 2, :))) + ...
-            (constants.F11 * max(superimposed.locStress(1, 1, :))^ 2) + ...
-            (constants.F22 * max(superimposed.locStress(1, 2, :))^ 2) + ...
-            (2 * constants.F12 * max(superimposed.locStress(1, 1, :)) * ...
-            max(superimposed.locStress(1, 2, :))) + ...
-            (constants.F66 * max(superimposed.locStress(1, 3, :)) ^ 2);
-        
-        if comparisonVar >= 1
+        for jj = 1:length(superimposedParam)
+            % Tsai-Wu criterion constants
+            constants.F11 = -1 / (strength.Xprime * strength.X);
+            constants.F1 = (1 / strength.X) + (1 / strength.Xprime);
+            constants.F22 = -1 / (strength.Yprime * strength.Y);
+            constants.F2 = (1 / strength.Y) + (1 / strength.Yprime);
+            constants.F12 = 1 / (2 * strength.Xprime * strength.X);
+            constants.F66 = 1 / strength.S;
             
-            % Does laminate fail?
-            faliure(4).fail = 'Yes';
+            comparisonVar = ...
+                (constants.F1 * superimposed.locStress(1, 1, jj)) + ...
+                (constants.F2 * superimposed.locStress(1, 2, jj)) + ...
+                (constants.F11 * superimposed.locStress(1, 1, jj)^ 2) + ...
+                (constants.F22 * superimposed.locStress(1, 2, jj)^ 2) + ...
+                (2 * constants.F12 * superimposed.locStress(1, 1, jj) * ...
+                superimposed.locStress(1, 2, jj)) + ...
+                (constants.F66 * superimposed.locStress(1, 3, jj) ^ 2);
             
-            % What is the mode of faliure?
-            faliure(4).mode = 'Matrix ';
-            
+            if comparisonVar >= 1
+                
+                % Does laminate fail?
+                faliure(4).fail(jj) = 'Yes';
+                
+                % What is the mode of faliure?
+                faliure(4).mode(jj) = 'Matrix ';
+                
+            else
+                
+                % Does laminate fail?
+                faliure(4).fail(jj) = 'No';
+                
+                % What is the mode of faliure?
+                faliure(4).mode(jj) = 'N/A ';
+                
+            end
         end
-            
-
     end
 
 end
