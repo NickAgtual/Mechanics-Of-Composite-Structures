@@ -9,8 +9,8 @@ for ii = 1:length(criteria)
     
 end
 
-    function [out] = maxStressCriterion(strength, superimposedParam, ...
-            faliure)
+    function [faliure] = maxStressCriterion(strength, ...
+            superimposedParam, faliure)
         
         % Checking for fiber faliure
         if (max(superimposedParam.locStress(1, 1, :)) >= strength.X) || ...
@@ -45,15 +45,52 @@ end
         end 
     end
 
-    function [out] = maxStrainCriterion(input)
+    function [faliure] = maxStrainCriterion(strength, ...
+            superimposedParam, faliure)
         
+        % Checking for fiber faliure
+        if (max(superimposedParam.locStrain(1, 1, :)) >= ...
+                strength.Xe) || ...
+                (max(supercapacitorParam.locStrain(1, 2, :)) >= ...
+                strength.Ye)
+            
+            % Does laminate fail?
+            faliure(1).fail = 'Yes';
+            
+            % What is the mode of faliure?
+            faliure(1).mode = 'Fiber Faliure';
+            
+        % Checking for matrix faliure (Method 1)
+        elseif (min(superimposedParam.locStrain(1, 1, :)) ...
+                <= strength.XePrime) || ...
+                (min(supercapacitorParam.locStrain(1, 2, :)) >= ...
+                strength.YePrie)
+            
+            % Does laminate fail?
+            faliure(1).fail = 'Yes';
+            
+            % What is the mode of faliure?
+            faliure(1).mode = 'Matrix ';
+            
+        elseif abs(max(superimposedParam.locStrain(1, 3, :))) >= ...
+                strength.Se
+            
+            % Does laminate fail?
+            faliure(1).fail = 'Yes';
+            
+            % What is the mode of faliure?
+            faliure(1).mode = 'Matrix ';
+            
+        end 
     end
 
-    function [out] = tsaiHillCriterion(input)
+    function [out] = tsaiHillCriterion(strength, superimposedParam, ...
+            faliure)
     
     end
 
-    function [out] = tsaiWuCriterion(inputs)
+    function [out] = tsaiWuCriterion(strength, superimposedParam, ...
+            faliure)
         
     end
 
