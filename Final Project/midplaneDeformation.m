@@ -1,5 +1,5 @@
 function [deformationAtMidplane, z, ABD] = midplaneDeformation(...
-    loading, Qbar, ss, t)
+    loading, Qbar, ssMod, t, ss)
 
 % Z location of each ply
 if rem(length(ss), 2) == 0
@@ -27,17 +27,34 @@ z = idx * t;
 
 for ii = 1:3
     for jj = 1:3
-        for kk = 1:length(ss)
+        for kk = 1:length(ssMod)
             
-            A(ii, jj) = A(ii, jj) + (Qbar(ii, jj, kk) * ...
-                (z(kk + 1) - z(kk)));
-            
-            B(ii, jj) = B(ii, jj) + (.5 * (Qbar(ii, jj, kk) * ...
-                (z(kk + 1)^2 - z(kk)^2)));
-            
-            D(ii, jj) = D(ii, jj) + ((1/3) * (Qbar(ii, jj, kk) * ...
-                (z(kk + 1)^3 - z(kk)^3)));
-            
+            if kk < (length(ss)/2) + 1
+                
+                A(ii, jj) = A(ii, jj) + (Qbar(ii, jj, kk) * ...
+                    (z(kk + 1) - z(kk)));
+                
+                B(ii, jj) = B(ii, jj) + (.5 * (Qbar(ii, jj, kk) * ...
+                    (z(kk + 1)^2 - z(kk)^2)));
+                
+                D(ii, jj) = D(ii, jj) + ((1/3) * (Qbar(ii, jj, kk) * ...
+                    (z(kk + 1)^3 - z(kk)^3)));
+                
+            elseif kk == (length(ss)/2) + 1
+                
+                continue
+                
+            elseif kk > (length(ss)/2) + 1
+                
+                A(ii, jj) = A(ii, jj) + (Qbar(ii, jj, kk) * ...
+                    (z(kk) - z(kk-1)));
+                
+                B(ii, jj) = B(ii, jj) + (.5 * (Qbar(ii, jj, kk) * ...
+                    (z(kk)^2 - z(kk-1)^2)));
+                
+                D(ii, jj) = D(ii, jj) + ((1/3) * (Qbar(ii, jj, kk) * ...
+                    (z(kk)^3 - z(kk-1)^3)));
+            end
         end
     end
 end
@@ -47,6 +64,9 @@ end
 
 % Laminate stiffness matrix
 ABD = [A B;B D];
+test = A
+test2 = B
+test3 = D
 
 % Deflection due to uniaxial loading
 deformationAtMidplane = inv(ABD) * loading';

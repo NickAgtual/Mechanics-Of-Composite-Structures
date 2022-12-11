@@ -1,4 +1,4 @@
-function [x] = stressStrainPlots(superimposedParam, zMod)
+function [x] = stressStrainPlots(superimposedParam, z)
 
 % Creating vector with magnitude of stress and strain
 for ii = 1:length(superimposedParam.globStress)
@@ -6,13 +6,15 @@ for ii = 1:length(superimposedParam.globStress)
     globStrainVec(ii) = norm(superimposedParam.globStrain(:, ii));
 end
 
+test = globStressVec
+
 %% Global Stress Plot
 
 % Creating new figure
 figure(1)
 
 % Plotting stress vs. z-coordinate
-plot(globStressVec, zMod, '-o')
+plot(globStressVec, z, '-o')
 
 % Plot parameters
 grid on
@@ -32,7 +34,7 @@ legend('location', 'Best', 'Interpreter', 'latex')
 figure(2)
 
 % Plotting strain vs. z-coordinate
-plot(globStrainVec, zMod, '-o')
+plot(globStrainVec, z, '-o')
 
 % Plot parameters
 grid on

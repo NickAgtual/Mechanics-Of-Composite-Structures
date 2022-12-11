@@ -1,4 +1,4 @@
-function [hygrothermal, laminaStressStrain, superimposedParam] = main()
+function [hygrothermal, laminaStressStrain, superimposedParam, Qbar] = main()
 
 %% INPUTS
 
@@ -21,36 +21,37 @@ loading = [0 10 0 8 -2 3]; % 1:3 = forces 4:6 = moments
 
 t = .005; % Laminae thickness
 ss = [0 30 -30 -30 30 0]; % Stackup sequence
+ssMod = [0 30 -30 -30 -30 30 0];
 
 %% Main Code Body
 
 % Create Lamina strct with Qbar
-[Qbar, S, Tepsilon] = reducedTransformedStiffnessMat(moduli, ss);
+[Qbar, S, Tepsilon] = reducedTransformedStiffnessMat(moduli, ssMod);
 
 % Add Sbar to lamina struct
-[Sbar, Tsigma] = reducedTransformedComplianceMat(S, ss);
+[Sbar, Tsigma] = reducedTransformedComplianceMat(S, ssMod);
 
 % Create laminate strcture with deformationAtMidplane & ABD matrix
 [deformationAtMidplane, z, ABD] = midplaneDeformation(loading, Qbar, ...
-    ss, t);
+    ssMod, t, ss);
 
 % Add global stress to lamina struct
-[globLaminaStress, zMod] = globalLaminaStress(deformationAtMidplane, ...
-    Qbar,z, ss);
+[globLaminaStress] = globalLaminaStress(deformationAtMidplane, ...
+    Qbar, z, ssMod);
 
 % Add all remaining stress & strain to lamina struct
 [laminaStressStrain] = transformation(globLaminaStress, Sbar, Tepsilon, ...
     Tsigma);
 
 % Calculating hygrothermal stresses
-[hygrothermal] = hygrothermalEffetcs(ss, hygrothermal, z, Tepsilon, ...
-    Tsigma, ABD, Qbar, zMod);
+[hygrothermal] = hygrothermalEffetcs(ssMod, hygrothermal, z, Tepsilon, ...
+    Tsigma, ABD, Qbar, ss);
 
 % Superimposing stress and strain
 [superimposedParam] = superposition(laminaStressStrain, hygrothermal);
 
 % Plotting global stress and strain
-stressStrainPlots(superimposedParam, zMod)
+stressStrainPlots(superimposedParam, z)
 
 
 end
