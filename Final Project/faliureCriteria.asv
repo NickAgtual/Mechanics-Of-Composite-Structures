@@ -1,0 +1,21 @@
+function [outputs] = faliureCriteria(strength, superimposedParam)
+
+    function [out] = maxStressCriterion(strength, superimposedParam)
+       
+        if (max(superimposedParam.locStress(1, 1, :)) >= strength.X) || ...
+                (max(supercapacitorParam.locStress(1, 2, :)
+    end
+
+    function [out] = maxStrainCriterion(input)
+        
+    end
+
+    function [out] = tsaiHillCriterion(input)
+    
+    end
+
+    function [out] = tsaiWuCriterion(inputs)
+        
+    end
+
+end

@@ -2,11 +2,23 @@ function [hygrothermal, laminaStressStrain, superimposedParam, Qbar] = main()
 
 %% INPUTS
 
-% Constituent Properties
+% Lamina Properties
 moduli.E1 = 20 * 10^6;
 moduli.E2 = 1.4 * 10^6;
 moduli.G12 = .8 * 10^6;
 moduli.v12 = .3;
+
+% Strength Properties
+strength.X = 310; % ksi
+strength.Xprime = -310; % ksi
+strength.Y = 9; % ksi
+strength.Yprime = -30; % ksi
+strength.S = 15; % ksi
+strength.Xe = .01555;
+strength.XePrime = -.01555;
+strength.Ye = .006;
+strength.YePrime = -.02;
+strength.Se = .015;
 
 % Global Hygrothermal Properties
 hygrothermal.alpha = [-.5 * 10 ^ -6, 15 * 10 ^ -6, 0]; % 1/F  
