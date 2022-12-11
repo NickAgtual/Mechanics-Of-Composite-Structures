@@ -1,4 +1,4 @@
-function [hygrothermal, laminaStressStrain, superimposedParam, Qbar] = main()
+function [hygrothermal, laminaStressStrain, superimposedParam, faliure] = main()
 
 %% INPUTS
 
@@ -65,7 +65,7 @@ ssMod = [0 30 -30 -30 -30 30 0];
 % Plotting global stress and strain
 stressStrainPlots(superimposedParam, z)
 
-
-
+% Checking faliure criteria
+[faliure] = faliureCriteria(strength, superimposedParam);
 
 end

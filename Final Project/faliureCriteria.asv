@@ -1,14 +1,19 @@
 function [outputs] = faliureCriteria(strength, superimposedParam)
 
+% Listing criterion (Same as nested function names)
 criteria = {'maxStressCriterion', 'maxStrainCriterion', ...
     'tsaiHillCriterion', 'tsaiWuCriterion'};
 
-
 for ii = 1:length(criteria)
     
+    % Adding criterion names to faliure structure
     faliure(ii).criterion = criteria{ii};
     
+    [faliure] = 
+    
 end
+
+
 
     function [faliure] = maxStressCriterion(strength, ...
             superimposedParam, faliure)
@@ -53,7 +58,6 @@ end
                 % What is the mode of faliure?
                 faliure(1).mode(jj) = 'N/A ';
             end
-            
         end
     end
 
@@ -114,11 +118,32 @@ end
             
             comparisonVar = ...
                 ((superimposedParam.locStress(1, 1, jj) / ...
-                strength.X)^2) + ...
-                ((superimposedParam.l
+                strength.X) ^ 2) + ...
+                ((superimposedParam.locStress(1, 2, jj) / ...
+                strength.Y) ^ 2) - ...
+                ((superimposedParam.locStress(1, 1, jj) / strength.X) * ...
+                (superimposedParam.locStress(1, 2, jj) / strength.X) + ...
+                ((superimposedParam.locStress(1, 3, jj) / ...
+                strength.S) ^ 2));
             
+            if comprisonVar >= 1
+                
+                % Does laminate fail?
+                faliure(3).fail(jj) = 'Yes';
+                
+                % What is the mode of faliure?
+                faliure(3).mode(jj) = 'Matrix ';
+                
+            else
+                
+                % Does laminate fail?
+                faliure(3).fail(jj) = 'No';
+                
+                % What is the mode of faliure?
+                faliure(3).mode(jj) = 'N/A ';
+                
+            end    
         end
-    
     end
 
     function [out] = tsaiWuCriterion(strength, superimposedParam, ...
