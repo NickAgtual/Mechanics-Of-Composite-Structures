@@ -64,9 +64,6 @@ end
 
 % Laminate stiffness matrix
 ABD = [A B;B D];
-test = A
-test2 = B
-test3 = D
 
 % Deflection due to uniaxial loading
 deformationAtMidplane = inv(ABD) * loading';

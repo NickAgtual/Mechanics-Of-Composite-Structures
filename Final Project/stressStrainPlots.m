@@ -1,20 +1,29 @@
-function [x] = stressStrainPlots(superimposedParam, z)
+function stressStrainPlots(superimposedParam, z)
+
+stressStrainType = {'Longitudinal', 'Transverse', 'Shear'};
 
 % Creating vector with magnitude of stress and strain
-for ii = 1:length(superimposedParam.globStress)
-    globStressVec(ii) = norm(superimposedParam.globStress(:, ii));
-    globStrainVec(ii) = norm(superimposedParam.globStrain(:, ii));
+for ii = 1:length(stressStrainType)
+    for jj = 1:length(z)
+    
+    % Concatenating local stress values (3 filed for each stress type)
+    localStress.(stressStrainType{ii})(jj) = ...
+        superimposedParam.locStress(ii, 1, jj);
+    
+    % Concatenating local strain values (3 fields for each strain type)
+    localStrain.(stressStrainType{ii})(jj) = ...
+        superimposedParam.locStrain(ii, 1, jj);
+    end
 end
 
-test = globStressVec
-
-%% Global Stress Plot
-
+%% Local Stress Plot
+for ii = 1:length(stressStrainType)
+    
 % Creating new figure
-figure(1)
+figure(ii)
 
 % Plotting stress vs. z-coordinate
-plot(globStressVec, z, '-o')
+plot(localStress.(stressStrainType{ii}), z, '-o')
 
 % Plot parameters
 grid on
@@ -28,13 +37,16 @@ title('\emph {Global Stress in Laminate}','fontsize',16,'Interpreter',...
     'latex')
 legend('location', 'Best', 'Interpreter', 'latex')
 
-%% Global Strain Plot
+end
 
+
+%% Local Strain Plot
+for ii = 1:length(stressStrainType)
 % Creating new figure
-figure(2)
+figure(ii + 3)
 
 % Plotting strain vs. z-coordinate
-plot(globStrainVec, z, '-o')
+plot(localStrain.(stressStrainType{ii}), z, '-o')
 
 % Plot parameters
 grid on
@@ -48,5 +60,5 @@ title('\emph {Global Strain in Lamina}','fontsize',16,'Interpreter',...
     'latex')
 legend('location', 'Best', 'Interpreter', 'latex')
 
-
+end
 end
