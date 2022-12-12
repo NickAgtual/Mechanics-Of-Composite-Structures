@@ -68,4 +68,6 @@ stressStrainPlots(superimposedParam, z)
 % Checking faliure criteria
 [faliure] = faliureCriteria(strength, superimposedParam);
 
+% Effective Laminate Properties
+
 end

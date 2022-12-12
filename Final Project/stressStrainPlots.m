@@ -20,7 +20,10 @@ end
 for ii = 1:length(stressStrainType)
     
 % Creating new figure
-figure(ii)
+figure(1)
+
+% Defining subplot position
+subplot(3, 1, ii)
 
 % Plotting stress vs. z-coordinate
 plot(localStress.(stressStrainType{ii}), z, '-o')
@@ -29,21 +32,30 @@ plot(localStress.(stressStrainType{ii}), z, '-o')
 grid on
 grid minor
 
+titleText = strcat(stressStrainType{ii}, ' Stress');
+
 % Plot descriptors
-xlabel('\emph {Global Stress ()}','fontsize',14,'Interpreter',...
+xlabel('\emph {Global Stress (psi)}','fontsize',12,'Interpreter',...
     'latex');
-ylabel('\emph {z-Location (in)}','fontsize',14,'Interpreter','latex');
-title('\emph {Global Stress in Laminate}','fontsize',16,'Interpreter',...
+ylabel('\emph {z-Location (in)}','fontsize',12,'Interpreter','latex');
+title(titleText,'fontsize',14,'Interpreter',...
     'latex')
 legend('location', 'Best', 'Interpreter', 'latex')
 
 end
 
+% Subplot title
+sgtitle('\emph {Local Stress at Each Ply}', 'fontsize', 16, ...
+    'Interpreter', 'latex')
+
 
 %% Local Strain Plot
 for ii = 1:length(stressStrainType)
 % Creating new figure
-figure(ii + 3)
+figure(2)
+
+% Definign subplot position
+subplot(3, 1, ii)
 
 % Plotting strain vs. z-coordinate
 plot(localStrain.(stressStrainType{ii}), z, '-o')
@@ -52,13 +64,19 @@ plot(localStrain.(stressStrainType{ii}), z, '-o')
 grid on
 grid minor
 
+titleText = strcat(stressStrainType{ii}, ' Strain');
+
 % Plot descriptors
-xlabel('\emph {Global Strain ()}','fontsize',14,'Interpreter',...
+xlabel('\emph {Global Strain}','fontsize',12,'Interpreter',...
     'latex');
-ylabel('\emph {z-Location (in)}','fontsize',14,'Interpreter','latex');
-title('\emph {Global Strain in Lamina}','fontsize',16,'Interpreter',...
+ylabel('\emph {z-Location (in)}','fontsize',12,'Interpreter','latex');
+title(titleText,'fontsize',14,'Interpreter',...
     'latex')
 legend('location', 'Best', 'Interpreter', 'latex')
 
 end
+
+% Subplot title
+sgtitle('\emph {Local Strain at Each Ply}', 'fontsize', 16, ...
+    'Interpreter', 'latex')
 end

@@ -23,8 +23,10 @@ end
     function [fail, mode] = maxStressCriterion(strength, ...
             superimposedParam)
         
+        % Initializing 'fail' and 'mode' cell arrays
         [fail, mode] = deal(cell(1, length(superimposedParam.locStress)));
         
+        % Looping through each ply
         for jj = 1:length(superimposedParam.locStress)
             
             % Checking for fiber faliure
@@ -75,6 +77,10 @@ end
     function [fail, mode] = maxStrainCriterion(strength, ...
             superimposedParam)
         
+                % Initializing 'fail' and 'mode' cell arrays
+        [fail, mode] = deal(cell(1, length(superimposedParam.locStress)));
+        
+                % Looping through each ply
         for jj = 1:length(superimposedParam.locStress)
             
             % Checking for fiber faliure
@@ -124,6 +130,10 @@ end
 
     function [fail, mode] = tsaiHillCriterion(strength, superimposedParam)
         
+                % Initializing 'fail' and 'mode' cell arrays
+        [fail, mode] = deal(cell(1, length(superimposedParam.locStress)));
+        
+                % Looping through each ply
         for jj = 1:length(superimposedParam.locStress)
             
             comparisonVar = ...
@@ -158,6 +168,10 @@ end
 
     function [fail, mode] = tsaiWuCriterion(strength, superimposedParam)
         
+                % Initializing 'fail' and 'mode' cell arrays
+        [fail, mode] = deal(cell(1, length(superimposedParam.locStress)));
+        
+                % Looping through each ply
         for jj = 1:length(superimposedParam.locStress)
             
             % Tsai-Wu criterion constants
@@ -169,13 +183,19 @@ end
             constants.F66 = 1 / strength.S;
             
             comparisonVar = ...
-                (constants.F1 * superimposedParam.locStress(1, 1, jj)) + ...
-                (constants.F2 * superimposedParam.locStress(2, 1, jj)) + ...
-                (constants.F11 * superimposedParam.locStress(1, 1, jj)^ 2) + ...
-                (constants.F22 * superimposedParam.locStress(2, 1, jj)^ 2) + ...
-                (2 * constants.F12 * superimposedParam.locStress(1, 1, jj) * ...
+                (constants.F1 * ...
+                superimposedParam.locStress(1, 1, jj)) + ...
+                (constants.F2 * ...
                 superimposedParam.locStress(2, 1, jj)) + ...
-                (constants.F66 * superimposedParam.locStress(3, 1, jj) ^ 2);
+                (constants.F11 * ...
+                superimposedParam.locStress(1, 1, jj)^ 2) + ...
+                (constants.F22 * ...
+                superimposedParam.locStress(2, 1, jj)^ 2) + ...
+                (2 * constants.F12 * ...
+                superimposedParam.locStress(1, 1, jj) * ...
+                superimposedParam.locStress(2, 1, jj)) + ...
+                (constants.F66 * ...
+                superimposedParam.locStress(3, 1, jj) ^ 2);
             
             if comparisonVar >= 1
                 
