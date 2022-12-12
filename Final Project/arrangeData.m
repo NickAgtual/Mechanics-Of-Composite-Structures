@@ -1,5 +1,5 @@
 function [toExport] = arrangeData(superimposedParam, z, ...
-    deformationAtMidplain, hygrothermal, loading, inputStruct)
+    deformationAtMidplain, hygrothermal, loading, inputStruct, GUI)
 
 %% Rearranging Existing Data
 
@@ -114,25 +114,28 @@ end
 
 %% Exporting Data to Excel Sheet
 
-% Question dialog box
-answer = questdlg('Export Data to Excel?', 'Export', 'Yes', 'No', 'Yes');
-
-% Handle response
-switch answer
-    case 'Yes'
-        % Creating file name using current date and time
-        dateTime = datestr(now, 'ddmmyy-HHMM');
-        toExport.fileName = strcat('Composite Analysis - ', dateTime, ...
-            '.xlsx');
-
-        % Writing to excel file
-        writecell(toExport.write,toExport.fileName)
-        
-    case 'No'
-        delete(answer)
-        
+if GUI == 0
+    
+    % Question dialog box
+    answer = questdlg('Export Data to Excel?', 'Export', 'Yes', 'No', 'Yes');
+    
+    % Handle response
+    switch answer
+        case 'Yes'
+            % Creating file name using current date and time
+            dateTime = datestr(now, 'ddmmyy-HHMM');
+            toExport.fileName = strcat('Composite Analysis - ', dateTime, ...
+                '.xlsx');
+            
+            % Writing to excel file
+            writecell(toExport.write,toExport.fileName)
+            
+        case 'No'
+            delete(answer)
+            
+    end
+    
 end
-
 
 end
 

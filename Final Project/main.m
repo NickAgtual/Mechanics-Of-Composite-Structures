@@ -1,5 +1,4 @@
-function [hygrothermal, laminaStressStrain, superimposedParam, faliure, ...
-    effectiveLaminatePropsMech, toExport] = main(varargin)
+function [faliure, toExport] = main(varargin)
 %% Inputs 
 
 % Structure fields (For lamina & strength properties)
@@ -18,6 +17,9 @@ loading = zeros(1, 6);
 
 % If the code is executed via GUI
 if nargin == 1
+    
+    % Boolean var signifying wether GUI was used
+    GUI = 1;
     
     % Populating moduli and strength structures
     for ii = 1:length(inputStruct.fields)
@@ -62,6 +64,9 @@ if nargin == 1
     
 % If no inputs to main function, the defaul values are as follows
 elseif nargin == 0
+    
+    % Boolean var signifying wether GUI was used
+    GUI = 0;
     
     % Lamina Properties
     moduli.E1 = 20 * 10^6;
@@ -133,8 +138,10 @@ end
 % Superimposing stress and strain
 [superimposedParam] = superposition(laminaStressStrain, hygrothermal);
 
-% Plotting global stress and strain
-stressStrainPlots(superimposedParam, z)
+if GUI == 0
+    % Plotting global stress and strain
+    stressStrainPlots(superimposedParam, z)
+end
 
 % Checking faliure criteria
 [faliure] = faliureCriteria(strength, superimposedParam);
@@ -145,6 +152,6 @@ stressStrainPlots(superimposedParam, z)
 
 % Arrange data for exporting
 [toExport] = arrangeData(superimposedParam, z, deformationAtMidplane, ...
-    hygrothermal, loading, inputStruct);
+    hygrothermal, loading, inputStruct, GUI);
 
 end
