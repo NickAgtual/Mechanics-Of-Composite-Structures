@@ -121,12 +121,10 @@ answer = questdlg('Export Data to Excel?', 'Export', 'Yes', 'No', 'Yes');
 switch answer
     case 'Yes'
         % Creating file name using current date and time
-        dateTime = datestr(now, 'dd/mm/yy-HH:MM');
-%         toExport.fileName = strcat('Composite Analysis - ', dateTime, ...
-%             '.xlsx');
-        toExport.fileName = strcat('Composite Analysis', ...
+        dateTime = datestr(now, 'ddmmyy-HHMM');
+        toExport.fileName = strcat('Composite Analysis - ', dateTime, ...
             '.xlsx');
-        
+
         % Writing to excel file
         writecell(toExport.write,toExport.fileName)
         
