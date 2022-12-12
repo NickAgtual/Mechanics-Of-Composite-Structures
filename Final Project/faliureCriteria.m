@@ -39,10 +39,9 @@ end
                 % What is the mode of faliure?
                 mode{jj} = 'Fiber Faliure';
                 
-            end
                 
                 % Checking for matrix faliure (Method 1)
-            if (superimposedParam.locStress(1, 1, jj) ...
+            elseif (superimposedParam.locStress(1, 1, jj) ...
                     <= strength.Xprime) || ...
                     (superimposedParam.locStress(2, 1, jj) >= ...
                     strength.Yprime)
@@ -53,9 +52,7 @@ end
                 % What is the mode of faliure?
                 mode{jj} = 'Matrix ';
                 
-            end
-                
-            if abs(superimposedParam.locStress(3, 1, jj)) >= strength.S
+            elseif abs(superimposedParam.locStress(3, 1, jj)) >= strength.S
                 
                 % Does laminate fail?
                 fail{jj} = 'Yes';
