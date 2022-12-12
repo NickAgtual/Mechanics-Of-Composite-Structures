@@ -54,10 +54,12 @@ loading = [0 0 896 0 0 0]; % 1:3 = forces 4:6 = moments
 % Have check in place to ensure this is row vec or col vec
 
 t = .009; % Laminae thickness
-ss = [45 -45 0 0 0 0 -45 45]; % Stackup sequence
-ssMod = [45 -45 0 0 0 0 0 -45 45];
+ss = [45 -45 0 0 0 -45 45]; % Stackup sequence
 
 %% Main Code Body
+
+% Creating modified stackup sequence accounting for 'middle/zero' ply
+[ssMod] = modifiedLayup(ss);
 
 % Create Lamina strct with Qbar
 [Qbar, S, Tepsilon] = reducedTransformedStiffnessMat(moduli, ssMod);
