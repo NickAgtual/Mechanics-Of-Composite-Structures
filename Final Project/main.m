@@ -1,4 +1,4 @@
-function [faliure, toExport] = main(varargin)
+function [faliure, toExport, plotStress, plotStrain, z] = main(varargin)
 %% Inputs 
 
 % Structure fields (For lamina & strength properties)
@@ -138,10 +138,9 @@ end
 % Superimposing stress and strain
 [superimposedParam] = superposition(laminaStressStrain, hygrothermal);
 
-if GUI == 0
     % Plotting global stress and strain
-    stressStrainPlots(superimposedParam, z)
-end
+[plotStress, plotStrain] = stressStrainPlots(superimposedParam, z, GUI)
+
 
 % Checking faliure criteria
 [faliure] = faliureCriteria(strength, superimposedParam);
