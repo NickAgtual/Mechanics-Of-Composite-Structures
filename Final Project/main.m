@@ -9,11 +9,11 @@ moduli.G12 = .8 * 10^6;
 moduli.v12 = .3;
 
 % Strength Properties
-strength.X = 310; % ksi
-strength.Xprime = -310; % ksi
-strength.Y = 9; % ksi
-strength.Yprime = -30; % ksi
-strength.S = 15; % ksi
+strength.X = 310 * 10 ^ 3; % psi
+strength.Xprime = -310 * 10 ^ 3; % psi
+strength.Y = 9 * 10 ^ 3; % psi
+strength.Yprime = -30 * 10 ^ 3; % psi
+strength.S = 15 * 10 ^ 3; % psi
 strength.Xe = .01555;
 strength.XePrime = -.01555;
 strength.Ye = .006;
@@ -28,7 +28,7 @@ hygrothermal.T0 = 0;
 hygrothermal.Tf = -250;
 
 % Loading
-loading = [0 10 0 8 -2 3]; % 1:3 = forces 4:6 = moments
+loading = [50 0 0 0 0 0]; % 1:3 = forces 4:6 = moments
 % Have check in place to ensure this is row vec or col vec
 
 t = .005; % Laminae thickness
