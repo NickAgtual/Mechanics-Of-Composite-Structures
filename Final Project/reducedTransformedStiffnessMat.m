@@ -1,4 +1,4 @@
-function [Qbar, S, Tepsilon] = reducedTransformedStiffnessMat(moduli, ssMod)
+function [Qbar, S, Tepsilon, Q] = reducedTransformedStiffnessMat(moduli, ssMod)
 
 %% Transformed Reduced Stiffness Matrix
 

@@ -1,4 +1,5 @@
-function [hygrothermal, laminaStressStrain, superimposedParam, faliure] = main()
+function [hygrothermal, laminaStressStrain, superimposedParam, faliure, ...
+    effectiveLaminatePropsMech] = main()
 
 %% INPUTS
 
@@ -38,7 +39,7 @@ ssMod = [0 30 -30 -30 -30 30 0];
 %% Main Code Body
 
 % Create Lamina strct with Qbar
-[Qbar, S, Tepsilon] = reducedTransformedStiffnessMat(moduli, ssMod);
+[Qbar, S, Tepsilon, Q] = reducedTransformedStiffnessMat(moduli, ssMod);
 
 % Add Sbar to lamina struct
 [Sbar, Tsigma] = reducedTransformedComplianceMat(S, ssMod);
@@ -68,6 +69,8 @@ stressStrainPlots(superimposedParam, z)
 % Checking faliure criteria
 [faliure] = faliureCriteria(strength, superimposedParam);
 
-% Effective Laminate Properties
+% Effective mechanical and thermal laminate properties
+[effectiveLaminatePropsMech] = effectiveLaminateProps(ABD, t, ss, ...
+    hygrothermal);
 
 end
