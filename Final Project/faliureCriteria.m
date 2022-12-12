@@ -43,7 +43,7 @@ end
                 % Checking for matrix faliure (Method 1)
             elseif (superimposedParam.locStress(1, 1, jj) ...
                     <= strength.Xprime) || ...
-                    (superimposedParam.locStress(2, 1, jj) >= ...
+                    (superimposedParam.locStress(2, 1, jj) <= ...
                     strength.Yprime)
                 
                 % Does laminate fail?
@@ -66,7 +66,7 @@ end
                 fail{jj} = 'No';
                 
                 % What is the mode of faliure?
-                mode{jj} = 'N/A ';
+                mode{jj} = 'N/A';
             end
         end
     end
@@ -95,14 +95,14 @@ end
                 % Checking for matrix faliure (Method 1)
             elseif (superimposedParam.locStrain(1, 1, jj) ...
                     <= strength.XePrime) || ...
-                    (superimposedParam.locStrain(2, 1, jj) >= ...
+                    (superimposedParam.locStrain(2, 1, jj) <= ...
                     strength.Yprime)
                 
                 % Does laminate fail?
                 fail{jj} = 'Yes';
                 
                 % What is the mode of faliure?
-                mode{jj} = 'Matrix ';
+                mode{jj} = 'Matrix';
                 
             elseif abs(superimposedParam.locStrain(3, 1, jj)) >= ...
                     strength.Se
@@ -111,7 +111,7 @@ end
                 fail{jj} = 'Yes';
                 
                 % What is the mode of faliure?
-                mode{jj} = 'Matrix ';
+                mode{jj} = 'Matrix';
                 
             else
                 
@@ -119,7 +119,7 @@ end
                 fail{jj} = 'No';
                 
                 % What is the mode of faliure?
-                mode{jj} = 'N/A ';
+                mode{jj} = 'N/A';
                 
             end
         end
@@ -149,7 +149,7 @@ end
                 fail{jj} = 'Yes';
                 
                 % What is the mode of faliure?
-                mode{jj} = 'Matrix ';
+                mode{jj} = 'Matrix';
                 
             else
                 
@@ -157,7 +157,7 @@ end
                 fail{jj} = 'No';
                 
                 % What is the mode of faliure?
-                mode{jj} = 'N/A ';
+                mode{jj} = 'N/A';
                 
             end    
         end
@@ -177,7 +177,7 @@ end
             constants.F22 = -1 / (strength.Yprime * strength.Y);
             constants.F2 = (1 / strength.Y) + (1 / strength.Yprime);
             constants.F12 = 1 / (2 * strength.Xprime * strength.X);
-            constants.F66 = 1 / strength.S;
+            constants.F66 = 1 / (strength.S ^ 2);
             
             comparisonVar = ...
                 (constants.F1 * ...
@@ -200,7 +200,7 @@ end
                 fail{jj} = 'Yes';
                 
                 % What is the mode of faliure?
-                mode{jj} = 'Matrix ';
+                mode{jj} = 'Matrix';
                 
             else
                 
@@ -208,7 +208,7 @@ end
                 fail{jj} = 'No';
                 
                 % What is the mode of faliure?
-                mode{jj} = 'N/A ';
+                mode{jj} = 'N/A';
                 
             end
         end

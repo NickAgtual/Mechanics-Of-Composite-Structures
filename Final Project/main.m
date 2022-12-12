@@ -24,7 +24,7 @@ function [hygrothermal, laminaStressStrain, superimposedParam, faliure, ...
 % Lamina Properties
 moduli.E1 = 7.4 * 10^6;
 moduli.E2 = 1.4 * 10^6;
-moduli.G12 = 73 * 10^6;
+moduli.G12 = .73 * 10^6;
 moduli.v12 = .28;
 
 % Strength Properties
@@ -43,14 +43,14 @@ strength.Se = .018;
 % hygrothermal.alpha = [-.5 * 10 ^ -6, 15 * 10 ^ -6, 0]; % 1/F  
 
 % Global Hygrothermal Properties
-hygrothermal.alpha = [3.9 * 10 ^ -6, 166.7 * 10 ^ -6, 0]; % 1/F  
+hygrothermal.alpha = [3.9 * 10 ^ -6, 16.7 * 10 ^ -6, 0]; % 1/F  
 
 % Temperature conditions
-hygrothermal.T0 = 250;
+hygrothermal.T0 = 100;
 hygrothermal.Tf = 100;
 
 % Loading
-loading = [0 10 0 5 0 0]; % 1:3 = forces 4:6 = moments
+loading = [0 0 896 0 0 0]; % 1:3 = forces 4:6 = moments
 % Have check in place to ensure this is row vec or col vec
 
 t = .009; % Laminae thickness
