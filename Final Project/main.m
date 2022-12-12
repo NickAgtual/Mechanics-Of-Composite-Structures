@@ -1,5 +1,5 @@
 function [hygrothermal, laminaStressStrain, superimposedParam, faliure, ...
-    effectiveLaminatePropsMech] = main(varargin)
+    effectiveLaminatePropsMech, toExport] = main(varargin)
 %% Inputs 
 
 % Structure fields (For lamina & strength properties)
@@ -142,5 +142,9 @@ stressStrainPlots(superimposedParam, z)
 % Effective mechanical and thermal laminate properties
 [effectiveLaminatePropsMech] = effectiveLaminateProps(ABD, t, ss, ...
     hygrothermal);
+
+% Arrange data for exporting
+[toExport] = arrangeData(superimposedParam, z, deformationAtMidplane, ...
+    hygrothermal, loading, inputStruct);
 
 end
