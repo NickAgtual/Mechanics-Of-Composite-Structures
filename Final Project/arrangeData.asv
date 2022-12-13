@@ -119,7 +119,7 @@ end
 
 % Writing gloabl stress
 toExport.write{13, 1} = 'Global Stress';
-stressNames.global = {'sigmax', 'sigmay', 'sigmaxy'};
+stressNames.g = {'sigmax', 'sigmay', 'sigmaxy'};
 
 for ii = 1:length(stressNames.global)
     for jj = 1:length(toExport.globStress) + 1
