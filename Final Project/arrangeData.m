@@ -211,7 +211,7 @@ if GUI == 0
             % Creating file name using current date and time
             dateTime = datestr(now, 'ddmmyy-HHMM');
             toExport.fileName = strcat('Composite Analysis - ',...
-                dateTime, '.xlsx');
+                dateTime, '.xlsm');
             
             % Writing to excel file
             writecell(toExport.write,toExport.fileName)
