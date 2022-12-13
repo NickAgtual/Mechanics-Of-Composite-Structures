@@ -44,7 +44,6 @@ if GUI == 0
             'latex');
         title(titleText,'fontsize',14,'Interpreter',...
             'latex')
-        legend('location', 'Best', 'Interpreter', 'latex')
         
     end
     
@@ -77,7 +76,6 @@ if GUI == 0
             'latex');
         title(titleText,'fontsize',14,'Interpreter',...
             'latex')
-        legend('location', 'Best', 'Interpreter', 'latex')
         
     end
     

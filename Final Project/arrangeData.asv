@@ -5,13 +5,14 @@ function [toExport] = arrangeData(superimposedParam, z, ...
 %% Rearranging Existing Data
 
 % Reshaping global stress & strain vectors to 3 x n matrices
-toExport.globStress = reshape(superimposedParam.globStress, [3, length(z)]);
-toExport.globStrain = reshape(superimposedParam.globStrain, [3, length(z)]);
+toExport.globStress = reshape(superimposedParam.globStress, ...
+    [3, length(z)]);
+toExport.globStrain = reshape(superimposedParam.globStrain, ...
+    [3, length(z)]);
 
 % Reshaping local stress & strain vectors to 3 x n matrices
 toExport.locStress = reshape(superimposedParam.locStress, [3, length(z)]);
 toExport.locStrain = reshape(superimposedParam.locStrain, [3, length(z)]);
-
 
 % Separating midplane deformation
 toExport.midplaneStrain = deformationAtMidplain(1:3);
@@ -20,6 +21,10 @@ toExport.midplaneCurverature = deformationAtMidplain(4:6);
 % Total Loads
 toExport.totalForces = hygrothermal.N + loading(1:3)';
 toExport.totalMoments = hygrothermal.M + loading(4:6)';
+
+% Mechanical and Thermal Laminate Effective Properties
+toExport.LEP = [effectiveLaminatePropsMT.E1, effectiveLaminateProps.E2, ...
+    e
 
 %% Creating Cell Array to Write to Excel
 
@@ -81,7 +86,7 @@ for ii = 1:6
 end
 
 % Writing Effective Laminate properties
-toExport.write{8, 7} = 'Midplane Deformation';
+toExport.write{8, 7} = 'Effective Laminate Properties';
 laminatePropNames = {'Ex', 'Ey', 'Gxy', 'vxy', 'ax', 'ay'};
 
 for ii = 1:6
@@ -94,10 +99,17 @@ for ii = 1:6
             laminatePropNames{ii});
         
     % vxy
-    elseif (4 <= ii) && (ii <= 6)
+    elseif ii == 4
         
-        toExport.write{ii + 8, 4} = midplaneNames{ii};
-        toExport.write{ii + 5, 5} = toExport.midplaneCurverature(ii - 3);
+        toExport.write{ii + 5, 9} = laminatePropNames{ii};
+        toExport.write{ii + 5, 10} = effectiveLaminatePropsMT.(...
+            laminatePropNames{ii});
+        
+    elseif (5 <= ii) && (ii <= 6)
+        
+        toExport.write{ii + 5, 9} = laminatePropNames{ii};
+        toExport.write{ii + 5, 10} = effectiveLaminatePropsMT.therm(ii ...
+            - 4);
         
     end
 end
@@ -186,15 +198,16 @@ end
 if GUI == 0
     
     % Question dialog box
-    answer = questdlg('Export Data to Excel?', 'Export', 'Yes', 'No', 'Yes');
+    answer = questdlg('Export Data to Excel?', 'Export', 'Yes', 'No',...
+        'Yes');
     
     % Handle response
     switch answer
         case 'Yes'
             % Creating file name using current date and time
             dateTime = datestr(now, 'ddmmyy-HHMM');
-            toExport.fileName = strcat('Composite Analysis - ', dateTime, ...
-                '.xlsx');
+            toExport.fileName = strcat('Composite Analysis - ',...
+                dateTime, '.xlsx');
             
             % Writing to excel file
             writecell(toExport.write,toExport.fileName)

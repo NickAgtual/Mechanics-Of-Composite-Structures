@@ -65,8 +65,6 @@ if nargin == 1
 % If no inputs to main function, the defaul values are as follows
 elseif nargin == 0
     
-    disp("HERE")
-    
     % Boolean var signifying wether GUI was used
     GUI = 0;
     

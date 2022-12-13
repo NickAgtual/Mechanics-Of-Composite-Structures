@@ -5,13 +5,14 @@ function [toExport] = arrangeData(superimposedParam, z, ...
 %% Rearranging Existing Data
 
 % Reshaping global stress & strain vectors to 3 x n matrices
-toExport.globStress = reshape(superimposedParam.globStress, [3, length(z)]);
-toExport.globStrain = reshape(superimposedParam.globStrain, [3, length(z)]);
+toExport.globStress = reshape(superimposedParam.globStress, ...
+    [3, length(z)]);
+toExport.globStrain = reshape(superimposedParam.globStrain, ...
+    [3, length(z)]);
 
 % Reshaping local stress & strain vectors to 3 x n matrices
 toExport.locStress = reshape(superimposedParam.locStress, [3, length(z)]);
 toExport.locStrain = reshape(superimposedParam.locStrain, [3, length(z)]);
-
 
 % Separating midplane deformation
 toExport.midplaneStrain = deformationAtMidplain(1:3);
@@ -20,6 +21,14 @@ toExport.midplaneCurverature = deformationAtMidplain(4:6);
 % Total Loads
 toExport.totalForces = hygrothermal.N + loading(1:3)';
 toExport.totalMoments = hygrothermal.M + loading(4:6)';
+
+% Mechanical and Thermal Laminate Effective Properties
+toExport.LEP = [effectiveLaminatePropsMT.Ex, ...
+    effectiveLaminatePropsMT.Ey, ...
+    effectiveLaminatePropsMT.Gxy, ...
+    effectiveLaminatePropsMT.vxy, ...
+    effectiveLaminatePropsMT.therm(1), ...
+    effectiveLaminatePropsMT.therm(2)]';
 
 %% Creating Cell Array to Write to Excel
 
@@ -193,15 +202,16 @@ end
 if GUI == 0
     
     % Question dialog box
-    answer = questdlg('Export Data to Excel?', 'Export', 'Yes', 'No', 'Yes');
+    answer = questdlg('Export Data to Excel?', 'Export', 'Yes', 'No',...
+        'Yes');
     
     % Handle response
     switch answer
         case 'Yes'
             % Creating file name using current date and time
             dateTime = datestr(now, 'ddmmyy-HHMM');
-            toExport.fileName = strcat('Composite Analysis - ', dateTime, ...
-                '.xlsx');
+            toExport.fileName = strcat('Composite Analysis - ',...
+                dateTime, '.xlsx');
             
             % Writing to excel file
             writecell(toExport.write,toExport.fileName)
