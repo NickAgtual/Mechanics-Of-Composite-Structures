@@ -4,8 +4,8 @@ function [toExport] = arrangeData(superimposedParam, z, ...
 %% Rearranging Existing Data
 
 % Reshaping local stress & strain vectors to 3 x n matrices
-toExport.locStress = reshape(superimposedParam.locStress, [3, length(z)]);
-toExport.locStrain = reshape(superimposedParam.locStrain, [3, length(z)]);
+toExport.globStress = reshape(superimposedParam.globStress, [3, length(z)]);
+toExport.globStrain = reshape(superimposedParam.globStrain, [3, length(z)]);
 
 % Separating midplane deformation
 toExport.midplaneStrain = deformationAtMidplain(1:3);
@@ -45,10 +45,12 @@ for ii = 1:length(z)
     toExport.write{5, 1 + ii} = ii;
 end
 
+
 % Writing z-coordinate
 toExport.write{6, 1} = 'z';
 for ii = 1:length(z)
     toExport.write{6, 1 + ii} = z(ii);
+    disp(z(ii))
 end
 
 % Writing midplane deformations
@@ -73,11 +75,11 @@ for ii = 1:6
 end
 
 % Writing local stress
-toExport.write{13, 1} = 'Local Stress';
+toExport.write{13, 1} = 'Global Stress';
 stressNames = {'sigma1', 'sigma2', 'sigma12'};
 
 for ii = 1:length(stressNames)
-    for jj = 1:length(toExport.locStress) + 1
+    for jj = 1:length(toExport.globStress) + 1
         
         if jj == 1
             
@@ -85,7 +87,7 @@ for ii = 1:length(stressNames)
             
         elseif jj > 1
             
-            toExport.write{ii + 13, jj} = toExport.locStress(ii, jj - 1);
+            toExport.write{ii + 13, jj} = toExport.globStress(ii, jj - 1);
             
         end
     end
@@ -93,11 +95,11 @@ for ii = 1:length(stressNames)
 end
 
 % Writing local strain
-toExport.write{18, 1} = 'Local Strain';
+toExport.write{18, 1} = 'Global Strain';
 strainNames = {'epsilon1', 'epsilon2', 'gamma12'};
 
 for ii = 1:length(strainNames)
-    for jj = 1:length(toExport.locStress) + 1
+    for jj = 1:length(toExport.globStress) + 1
         
         if jj == 1
             
@@ -105,7 +107,7 @@ for ii = 1:length(strainNames)
             
         elseif jj > 1
             
-            toExport.write{ii + 18, jj } = toExport.locStrain(ii, jj - 1);
+            toExport.write{ii + 18, jj } = toExport.globStrain(ii, jj - 1);
             
         end
     end

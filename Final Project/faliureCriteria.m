@@ -149,9 +149,6 @@ end
                 % Does laminate fail?
                 fail{jj} = 'Yes';
                 
-                % What is the mode of faliure?
-                mode{jj} = 'Matrix';
-                
             else
                 
                 % Does laminate fail?
@@ -200,9 +197,7 @@ end
                 
                 % Does laminate fail?
                 fail{jj} = 'Yes';
-                
-                % What is the mode of faliure?
-                mode{jj} = 'Matrix';
+               
                 
             else
                 

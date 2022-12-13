@@ -1,4 +1,5 @@
-function [Qbar, S, Tepsilon, Q] = reducedTransformedStiffnessMat(moduli, ssMod)
+function [Qbar, S, Tepsilon, Q, QbarT] = ...
+    reducedTransformedStiffnessMat(moduli, ssMod, ss)
 
 %% Transformed Reduced Stiffness Matrix
 
@@ -28,5 +29,23 @@ for ii = 1:length(ssMod)
         Tepsilon(:, :, ii);
     
 end
+[TepsilonT, QbarT] = deal(zeros(3, 3, length(ss)));
+for ii = 1:length(ss)
+    
+    % Reduced strain transformation matrix
+    TepsilonT(:,:, ii) = [(cosd(ss(ii)).^2) (sind(ss(ii)).^2) ...
+        (cosd(ss(ii)) .* sind(ss(ii)));
+        (sind(ss(ii)).^2) (cosd(ss(ii)).^2) (-1 * (cosd(ss(ii)) ...
+        .* sind(ss(ii)))); (-2 .* (cosd(ss(ii)) .* sind(ss(ii)))) ...
+        (2 .* (cosd(ss(ii)) .* sind(ss(ii)))) ...
+        ((cosd(ss(ii)).^2) - (sind(ss(ii)).^2))];
+    
+    % Reduced trainsformed stiffness matrix
+    QbarT(:, :, ii) = transpose(TepsilonT(:, :, ii)) * Q * ...
+        TepsilonT(:, :, ii);
+    
+end
+
+tttt = QbarT
 
 end
