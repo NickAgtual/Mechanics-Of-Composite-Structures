@@ -1,0 +1,265 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>hygrothermalEffetcs</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-12"><meta name="DC.source" content="hygrothermalEffetcs.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#3">Global Hygrothermal Properties &amp; Free Strain</a></li><li><a href="#4">Hygrothermal Loads</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> [hygrothermal] = <span class="keyword">...</span>
+    hygrothermalEffetcs(ssMod, hygrothermal, z, Tepsilon, Tsigma, ABD, <span class="keyword">...</span>
+    Qbar, ss)
+</pre><pre class="codeinput"><span class="comment">% Temperature difference</span>
+hygrothermal.deltaT = hygrothermal.Tf - hygrothermal.T0;
+</pre><pre class="codeoutput error">Not enough input arguments.
+
+Error in hygrothermalEffetcs (line 6)
+hygrothermal.deltaT = hygrothermal.Tf - hygrothermal.T0;
+</pre><h2 id="3">Global Hygrothermal Properties &amp; Free Strain</h2><pre class="codeinput"><span class="keyword">for</span> ii = 1:length(ssMod)
+
+    <span class="comment">% Global hygrothermal properties</span>
+    hygrothermal.alphaGlobal(:, :, ii) = inv(Tepsilon(:, :, ii)) * <span class="keyword">...</span>
+        hygrothermal.alpha';
+
+    <span class="comment">% Free strain</span>
+    hygrothermal.freeStrain(:, :, ii) = <span class="keyword">...</span>
+        (hygrothermal.alphaGlobal(:, :, ii) .* hygrothermal.deltaT);
+
+<span class="keyword">end</span>
+</pre><h2 id="4">Hygrothermal Loads</h2><pre class="codeinput"><span class="comment">% Initializing hygrothermal loads</span>
+[hygrothermal.Nprelim, hygrothermal.Mprelim] = deal(zeros(3, 1));
+
+<span class="comment">% Calculating forces and moments due to hygrothermal conditions</span>
+<span class="keyword">for</span> ii = 1:length(ssMod)
+
+    <span class="keyword">if</span> ii &lt; (length(ss)/2) + 1
+
+        <span class="comment">% Forces (does not include mutliplication of temp diff.)</span>
+        hygrothermal.Nprelim = hygrothermal.Nprelim + ((Qbar(:, :, ii) <span class="keyword">...</span>
+            * hygrothermal.alphaGlobal(:, :, ii) .* (z(ii+1) - z(ii))));
+
+        <span class="comment">% Moments (does not include mutliplication of temp diff.)</span>
+        hygrothermal.Mprelim = hygrothermal.Mprelim + ((Qbar(:, :, ii) * <span class="keyword">...</span>
+            hygrothermal.alphaGlobal(:, :, ii) * ((z(ii + 1) ^ 2) <span class="keyword">...</span>
+            - (z(ii) ^ 2))));
+
+    <span class="keyword">elseif</span> ii == (length(ss)/2) +1
+
+        <span class="keyword">continue</span>
+
+    <span class="keyword">elseif</span> ii &gt; (length(ss)/2) + 1
+
+        <span class="comment">% Forces (does not include mutliplication of temp diff.)</span>
+        hygrothermal.Nprelim = hygrothermal.Nprelim + ((Qbar(:, :, ii) <span class="keyword">...</span>
+            * hygrothermal.alphaGlobal(:, :, ii) .* (z(ii) - z(ii-1))));
+
+        <span class="comment">% Moments (does not include mutliplication of temp diff.)</span>
+        hygrothermal.Mprelim = hygrothermal.Mprelim + ((Qbar(:, :, ii) * <span class="keyword">...</span>
+            hygrothermal.alphaGlobal(:, :, ii) * ((z(ii) ^ 2) <span class="keyword">...</span>
+            - (z(ii-1) ^ 2))));
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="comment">% Thermal Loads</span>
+hygrothermal.N = hygrothermal.Nprelim * hygrothermal.deltaT;
+hygrothermal.M = hygrothermal.Mprelim * hygrothermal.deltaT * .5;
+
+<span class="comment">% Hygrothermal midplain deformation</span>
+<span class="comment">% Since this only accounts for temperature change, the total midplane def.</span>
+<span class="comment">% is equivalent to the midplain strain and curverature due to hygrothermal</span>
+<span class="comment">% conditions</span>
+hygrothermal.midplaneDeformation = inv(ABD) * <span class="keyword">...</span>
+    [hygrothermal.N; hygrothermal.M];
+
+<span class="keyword">for</span> ii = 1:length(ssMod)
+
+    hygrothermal.globStrain(:, :, ii) = <span class="keyword">...</span>
+        hygrothermal.midplaneDeformation(1:3) + <span class="keyword">...</span>
+        (z(ii) * hygrothermal.midplaneDeformation(4:end)) - <span class="keyword">...</span>
+        hygrothermal.freeStrain(:, :, ii);
+<span class="keyword">end</span>
+
+<span class="comment">% Hygrothermal stress (lamina) and local strain</span>
+<span class="keyword">for</span> ii = 1:length(ssMod)
+
+    <span class="comment">% Global Stress</span>
+    hygrothermal.globStress(:, :, ii) = Qbar(:, :, ii) * <span class="keyword">...</span>
+        (hygrothermal.midplaneDeformation(1:3) + (z(ii) * <span class="keyword">...</span>
+        hygrothermal.midplaneDeformation(4:end)) - <span class="keyword">...</span>
+        hygrothermal.freeStrain(:, :, ii));
+
+    <span class="comment">% Local Stress</span>
+    hygrothermal.locStress(:, :, ii) = Tsigma(:, :, ii) * <span class="keyword">...</span>
+        hygrothermal.globStress(:, :, ii);
+
+    <span class="comment">% Local strain</span>
+    hygrothermal.locStrain(:, :, ii) = Tepsilon(:, :, ii) * <span class="keyword">...</span>
+        hygrothermal.globStrain(:, :, ii);
+
+<span class="keyword">end</span>
+</pre><pre class="codeinput"><span class="keyword">end</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function [hygrothermal] = ...
+    hygrothermalEffetcs(ssMod, hygrothermal, z, Tepsilon, Tsigma, ABD, ...
+    Qbar, ss)
+
+% Temperature difference
+hygrothermal.deltaT = hygrothermal.Tf - hygrothermal.T0;
+
+%% Global Hygrothermal Properties & Free Strain
+for ii = 1:length(ssMod)
+    
+    % Global hygrothermal properties
+    hygrothermal.alphaGlobal(:, :, ii) = inv(Tepsilon(:, :, ii)) * ...
+        hygrothermal.alpha';
+    
+    % Free strain
+    hygrothermal.freeStrain(:, :, ii) = ...
+        (hygrothermal.alphaGlobal(:, :, ii) .* hygrothermal.deltaT);
+    
+end
+
+%% Hygrothermal Loads
+
+% Initializing hygrothermal loads
+[hygrothermal.Nprelim, hygrothermal.Mprelim] = deal(zeros(3, 1));
+
+% Calculating forces and moments due to hygrothermal conditions
+for ii = 1:length(ssMod)
+    
+    if ii < (length(ss)/2) + 1
+        
+        % Forces (does not include mutliplication of temp diff.)
+        hygrothermal.Nprelim = hygrothermal.Nprelim + ((Qbar(:, :, ii) ...
+            * hygrothermal.alphaGlobal(:, :, ii) .* (z(ii+1) - z(ii))));
+        
+        % Moments (does not include mutliplication of temp diff.)
+        hygrothermal.Mprelim = hygrothermal.Mprelim + ((Qbar(:, :, ii) * ...
+            hygrothermal.alphaGlobal(:, :, ii) * ((z(ii + 1) ^ 2) ...
+            - (z(ii) ^ 2))));
+        
+    elseif ii == (length(ss)/2) +1
+        
+        continue
+        
+    elseif ii > (length(ss)/2) + 1
+        
+        % Forces (does not include mutliplication of temp diff.)
+        hygrothermal.Nprelim = hygrothermal.Nprelim + ((Qbar(:, :, ii) ...
+            * hygrothermal.alphaGlobal(:, :, ii) .* (z(ii) - z(ii-1))));
+        
+        % Moments (does not include mutliplication of temp diff.)
+        hygrothermal.Mprelim = hygrothermal.Mprelim + ((Qbar(:, :, ii) * ...
+            hygrothermal.alphaGlobal(:, :, ii) * ((z(ii) ^ 2) ...
+            - (z(ii-1) ^ 2))));
+    end
+    
+end
+
+% Thermal Loads
+hygrothermal.N = hygrothermal.Nprelim * hygrothermal.deltaT;
+hygrothermal.M = hygrothermal.Mprelim * hygrothermal.deltaT * .5;
+
+% Hygrothermal midplain deformation
+% Since this only accounts for temperature change, the total midplane def. 
+% is equivalent to the midplain strain and curverature due to hygrothermal
+% conditions
+hygrothermal.midplaneDeformation = inv(ABD) * ...
+    [hygrothermal.N; hygrothermal.M];
+
+for ii = 1:length(ssMod)
+    
+    hygrothermal.globStrain(:, :, ii) = ...
+        hygrothermal.midplaneDeformation(1:3) + ...
+        (z(ii) * hygrothermal.midplaneDeformation(4:end)) - ...
+        hygrothermal.freeStrain(:, :, ii);
+end
+
+% Hygrothermal stress (lamina) and local strain
+for ii = 1:length(ssMod)
+
+    % Global Stress
+    hygrothermal.globStress(:, :, ii) = Qbar(:, :, ii) * ...
+        (hygrothermal.midplaneDeformation(1:3) + (z(ii) * ...
+        hygrothermal.midplaneDeformation(4:end)) - ...
+        hygrothermal.freeStrain(:, :, ii));
+    
+    % Local Stress
+    hygrothermal.locStress(:, :, ii) = Tsigma(:, :, ii) * ...
+        hygrothermal.globStress(:, :, ii);
+    
+    % Local strain
+    hygrothermal.locStrain(:, :, ii) = Tepsilon(:, :, ii) * ...
+        hygrothermal.globStrain(:, :, ii);
+    
+end
+
+end
+
+
+
+##### SOURCE END #####
+--></body></html>

@@ -81,7 +81,7 @@ for ii = 1:6
 end
 
 % Writing Effective Laminate properties
-toExport.write{8, 7} = 'Effective Laminate Properties';
+toExport.write{8, 7} = 'Midplane Deformation';
 laminatePropNames = {'Ex', 'Ey', 'Gxy', 'vxy', 'ax', 'ay'};
 
 for ii = 1:6
@@ -94,17 +94,10 @@ for ii = 1:6
             laminatePropNames{ii});
         
     % vxy
-    elseif ii == 4
+    elseif (4 <= ii) && (ii <= 6)
         
-        toExport.write{ii + 5, 9} = laminatePropNames{ii};
-        toExport.write{ii + 5, 10} = effectiveLaminatePropsMT.(...
-            laminatePropNames{ii});
-        
-    elseif (5 <= ii) && (ii <= 6)
-        
-        toExport.write{ii + 5, 9} = laminatePropNames{ii};
-        toExport.write{ii + 5, 10} = effectiveLaminatePropsMT.therm(ii ...
-            - 4);
+        toExport.write{ii + 8, 4} = midplaneNames{ii};
+        toExport.write{ii + 5, 5} = toExport.midplaneCurverature(ii - 3);
         
     end
 end

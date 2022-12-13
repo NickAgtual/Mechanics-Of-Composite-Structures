@@ -1,5 +1,5 @@
 function [deformationAtMidplane, z, ABD] = midplaneDeformation(...
-    loading, Qbar, ssMod, t, ss, QbarT)
+    loading, Qbar, ssMod, t, ss)
 
 % Z location of each ply
 if rem(length(ss), 2) == 0
@@ -18,7 +18,7 @@ else
 end
 
 % z-coordinate
-z = idx * t
+z = idx * t;
 
 %% ABD Matrix
 

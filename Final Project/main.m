@@ -116,15 +116,15 @@ end
 [ssMod] = modifiedLayup(ss);
 
 % Create Lamina strct with Qbar
-[Qbar, S, Tepsilon, QbarT] = reducedTransformedStiffnessMat(moduli, ...
-    ssMod, ss);
+[Qbar, S, Tepsilon] = reducedTransformedStiffnessMat(moduli, ...
+    ssMod);
 
 % Add Sbar to lamina struct
 [Sbar, Tsigma] = reducedTransformedComplianceMat(S, ssMod);
 
 % Create laminate strcture with deformationAtMidplane & ABD matrix
 [deformationAtMidplane, z, ABD] = midplaneDeformation(loading, Qbar, ...
-    ssMod, t, ss, QbarT);
+    ssMod, t, ss);
 
 % Add global stress to lamina struct
 [globLaminaStress] = globalLaminaStress(deformationAtMidplane, ...
@@ -154,6 +154,6 @@ end
 
 % Arrange data for exporting
 [toExport] = arrangeData(superimposedParam, z, deformationAtMidplane, ...
-    hygrothermal, loading, inputStruct, GUI);
+    hygrothermal, loading, inputStruct, effectiveLaminatePropsMT, GUI);
 
 end

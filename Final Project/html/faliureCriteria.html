@@ -1,0 +1,506 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>faliureCriteria</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-12"><meta name="DC.source" content="faliureCriteria.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">function</span> [faliure] = faliureCriteria(strength, superimposedParam)
+
+<span class="comment">% Listing criterion</span>
+criteria = {<span class="string">'Max Stres Criterion'</span>, <span class="string">'Max Strain Criterion'</span>, <span class="keyword">...</span>
+    <span class="string">'Tsai-Hill Criterion'</span>, <span class="string">'Tsai-Wu Criterion'</span>};
+
+<span class="comment">% Pupulating cell array with all faliure criterion functions</span>
+functions = {@maxStressCriterion, <span class="keyword">...</span>
+             @maxStrainCriterion, <span class="keyword">...</span>
+             @tsaiHillCriterion, <span class="keyword">...</span>
+             @tsaiWuCriterion};
+
+<span class="keyword">for</span> ii = 1:length(criteria)
+
+    <span class="comment">% Adding criterion names to faliure structure</span>
+    faliure(ii).criterion = criteria{ii};
+
+    [faliure(ii).fail, faliure(ii).mode] = <span class="keyword">...</span>
+        functions{ii}(strength, superimposedParam);
+
+<span class="keyword">end</span>
+
+    <span class="keyword">function</span> [fail, mode] = maxStressCriterion(strength, <span class="keyword">...</span>
+            superimposedParam)
+
+        <span class="comment">% Initializing 'fail' and 'mode' cell arrays</span>
+        [fail, mode] = deal(cell(1, length(superimposedParam.locStress)));
+
+        <span class="comment">% Looping through each ply</span>
+        <span class="keyword">for</span> jj = 1:length(superimposedParam.locStress)
+
+            <span class="comment">% Checking for fiber faliure</span>
+            <span class="keyword">if</span> (superimposedParam.locStress(1, 1, jj) &gt;= strength.X) || <span class="keyword">...</span>
+                    (superimposedParam.locStress(2, 1, jj) &gt;= strength.Y)
+
+                <span class="comment">% Does laminate fail?</span>
+                fail{jj} = <span class="string">'Yes'</span>;
+
+                <span class="comment">% What is the mode of faliure?</span>
+                mode{jj} = <span class="string">'Fiber Faliure'</span>;
+
+
+                <span class="comment">% Checking for matrix faliure (Method 1)</span>
+            <span class="keyword">elseif</span> (superimposedParam.locStress(1, 1, jj) <span class="keyword">...</span>
+                    &lt;= strength.Xprime) || <span class="keyword">...</span>
+                    (superimposedParam.locStress(2, 1, jj) &lt;= <span class="keyword">...</span>
+                    strength.Yprime)
+
+                <span class="comment">% Does laminate fail?</span>
+                fail{jj} = <span class="string">'Yes'</span>;
+
+                <span class="comment">% What is the mode of faliure?</span>
+                mode{jj} = <span class="string">'Matrix '</span>;
+
+            <span class="keyword">elseif</span> abs(superimposedParam.locStress(3, 1, jj)) &gt;= strength.S
+
+                <span class="comment">% Does laminate fail?</span>
+                fail{jj} = <span class="string">'Yes'</span>;
+
+                <span class="comment">% What is the mode of faliure?</span>
+                mode{jj} = <span class="string">'Matrix '</span>;
+
+            <span class="keyword">else</span>
+
+                <span class="comment">% Does laminate fail?</span>
+                fail{jj} = <span class="string">'No'</span>;
+
+                <span class="comment">% What is the mode of faliure?</span>
+                mode{jj} = <span class="string">'N/A'</span>;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="keyword">function</span> [fail, mode] = maxStrainCriterion(strength, <span class="keyword">...</span>
+            superimposedParam)
+
+                <span class="comment">% Initializing 'fail' and 'mode' cell arrays</span>
+        [fail, mode] = deal(cell(1, length(superimposedParam.locStress)));
+
+                <span class="comment">% Looping through each ply</span>
+        <span class="keyword">for</span> jj = 1:length(superimposedParam.locStress)
+
+            <span class="comment">% Checking for fiber faliure</span>
+            <span class="keyword">if</span> (superimposedParam.locStrain(1, 1, jj) &gt;= <span class="keyword">...</span>
+                    strength.Xe) || <span class="keyword">...</span>
+                    (superimposedParam.locStrain(2, 1, jj) &gt;= <span class="keyword">...</span>
+                    strength.Ye)
+
+                <span class="comment">% Does laminate fail?</span>
+                fail{jj} = <span class="string">'Yes'</span>;
+
+                <span class="comment">% What is the mode of faliure?</span>
+                mode{jj} = <span class="string">'Fiber Faliure'</span>;
+
+                <span class="comment">% Checking for matrix faliure (Method 1)</span>
+            <span class="keyword">elseif</span> (superimposedParam.locStrain(1, 1, jj) <span class="keyword">...</span>
+                    &lt;= strength.XePrime) || <span class="keyword">...</span>
+                    (superimposedParam.locStrain(2, 1, jj) &lt;= <span class="keyword">...</span>
+                    strength.Yprime)
+
+                <span class="comment">% Does laminate fail?</span>
+                fail{jj} = <span class="string">'Yes'</span>;
+
+                <span class="comment">% What is the mode of faliure?</span>
+                mode{jj} = <span class="string">'Matrix'</span>;
+
+            <span class="keyword">elseif</span> abs(superimposedParam.locStrain(3, 1, jj)) &gt;= <span class="keyword">...</span>
+                    strength.Se
+
+                <span class="comment">% Does laminate fail?</span>
+                fail{jj} = <span class="string">'Yes'</span>;
+
+                <span class="comment">% What is the mode of faliure?</span>
+                mode{jj} = <span class="string">'Matrix'</span>;
+
+            <span class="keyword">else</span>
+
+                <span class="comment">% Does laminate fail?</span>
+                fail{jj} = <span class="string">'No'</span>;
+
+                <span class="comment">% What is the mode of faliure?</span>
+                mode{jj} = <span class="string">'N/A'</span>;
+
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="keyword">function</span> [fail, mode] = tsaiHillCriterion(strength, superimposedParam)
+
+                <span class="comment">% Initializing 'fail' and 'mode' cell arrays</span>
+        [fail, mode] = deal(cell(1, length(superimposedParam.locStress)));
+
+                <span class="comment">% Looping through each ply</span>
+        <span class="keyword">for</span> jj = 1:length(superimposedParam.locStress)
+
+            <span class="comment">% Variable to compare</span>
+            comparisonVar = <span class="keyword">...</span>
+                ((superimposedParam.locStress(1, 1, jj) / <span class="keyword">...</span>
+                strength.X) ^ 2) + <span class="keyword">...</span>
+                ((superimposedParam.locStress(2, 1, jj) / <span class="keyword">...</span>
+                strength.Y) ^ 2) - <span class="keyword">...</span>
+                ((superimposedParam.locStress(1, 1, jj) / strength.X) * <span class="keyword">...</span>
+                (superimposedParam.locStress(2, 1, jj) / strength.X) + <span class="keyword">...</span>
+                ((superimposedParam.locStress(3, 1, jj) / <span class="keyword">...</span>
+                strength.S) ^ 2));
+
+            <span class="keyword">if</span> comparisonVar &gt;= 1
+
+                <span class="comment">% Does laminate fail?</span>
+                fail{jj} = <span class="string">'Yes'</span>;
+
+            <span class="keyword">else</span>
+
+                <span class="comment">% Does laminate fail?</span>
+                fail{jj} = <span class="string">'No'</span>;
+
+                <span class="comment">% What is the mode of faliure?</span>
+                mode{jj} = <span class="string">'N/A'</span>;
+
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="keyword">function</span> [fail, mode] = tsaiWuCriterion(strength, superimposedParam)
+
+                <span class="comment">% Initializing 'fail' and 'mode' cell arrays</span>
+        [fail, mode] = deal(cell(1, length(superimposedParam.locStress)));
+
+                <span class="comment">% Looping through each ply</span>
+        <span class="keyword">for</span> jj = 1:length(superimposedParam.locStress)
+
+            <span class="comment">% Tsai-Wu criterion constants</span>
+            constants.F11 = -1 / (strength.Xprime * strength.X);
+            constants.F1 = (1 / strength.X) + (1 / strength.Xprime);
+            constants.F22 = -1 / (strength.Yprime * strength.Y);
+            constants.F2 = (1 / strength.Y) + (1 / strength.Yprime);
+            constants.F12 = 1 / (2 * strength.Xprime * strength.X);
+            constants.F66 = 1 / (strength.S ^ 2);
+
+            <span class="comment">% Varibel to compare</span>
+            comparisonVar = <span class="keyword">...</span>
+                (constants.F1 * <span class="keyword">...</span>
+                superimposedParam.locStress(1, 1, jj)) + <span class="keyword">...</span>
+                (constants.F2 * <span class="keyword">...</span>
+                superimposedParam.locStress(2, 1, jj)) + <span class="keyword">...</span>
+                (constants.F11 * <span class="keyword">...</span>
+                superimposedParam.locStress(1, 1, jj)^ 2) + <span class="keyword">...</span>
+                (constants.F22 * <span class="keyword">...</span>
+                superimposedParam.locStress(2, 1, jj)^ 2) + <span class="keyword">...</span>
+                (2 * constants.F12 * <span class="keyword">...</span>
+                superimposedParam.locStress(1, 1, jj) * <span class="keyword">...</span>
+                superimposedParam.locStress(2, 1, jj)) + <span class="keyword">...</span>
+                (constants.F66 * <span class="keyword">...</span>
+                superimposedParam.locStress(3, 1, jj) ^ 2);
+
+            <span class="keyword">if</span> comparisonVar &gt;= 1
+
+                <span class="comment">% Does laminate fail?</span>
+                fail{jj} = <span class="string">'Yes'</span>;
+
+
+            <span class="keyword">else</span>
+
+                <span class="comment">% Does laminate fail?</span>
+                fail{jj} = <span class="string">'No'</span>;
+
+                <span class="comment">% What is the mode of faliure?</span>
+                mode{jj} = <span class="string">'N/A'</span>;
+
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput error">Not enough input arguments.
+
+Error in faliureCriteria (line 19)
+        functions{ii}(strength, superimposedParam);
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function [faliure] = faliureCriteria(strength, superimposedParam)
+
+% Listing criterion
+criteria = {'Max Stres Criterion', 'Max Strain Criterion', ...
+    'Tsai-Hill Criterion', 'Tsai-Wu Criterion'};
+
+% Pupulating cell array with all faliure criterion functions
+functions = {@maxStressCriterion, ...
+             @maxStrainCriterion, ...
+             @tsaiHillCriterion, ...
+             @tsaiWuCriterion};
+
+for ii = 1:length(criteria)
+    
+    % Adding criterion names to faliure structure
+    faliure(ii).criterion = criteria{ii};
+    
+    [faliure(ii).fail, faliure(ii).mode] = ...
+        functions{ii}(strength, superimposedParam);
+    
+end
+
+    function [fail, mode] = maxStressCriterion(strength, ...
+            superimposedParam)
+        
+        % Initializing 'fail' and 'mode' cell arrays
+        [fail, mode] = deal(cell(1, length(superimposedParam.locStress)));
+        
+        % Looping through each ply
+        for jj = 1:length(superimposedParam.locStress)
+            
+            % Checking for fiber faliure
+            if (superimposedParam.locStress(1, 1, jj) >= strength.X) || ...
+                    (superimposedParam.locStress(2, 1, jj) >= strength.Y)
+                
+                % Does laminate fail?
+                fail{jj} = 'Yes';
+                
+                % What is the mode of faliure?
+                mode{jj} = 'Fiber Faliure';
+                
+                
+                % Checking for matrix faliure (Method 1)
+            elseif (superimposedParam.locStress(1, 1, jj) ...
+                    <= strength.Xprime) || ...
+                    (superimposedParam.locStress(2, 1, jj) <= ...
+                    strength.Yprime)
+                
+                % Does laminate fail?
+                fail{jj} = 'Yes';
+                
+                % What is the mode of faliure?
+                mode{jj} = 'Matrix ';
+                
+            elseif abs(superimposedParam.locStress(3, 1, jj)) >= strength.S
+                
+                % Does laminate fail?
+                fail{jj} = 'Yes';
+                
+                % What is the mode of faliure?
+                mode{jj} = 'Matrix ';
+                
+            else
+                
+                % Does laminate fail?
+                fail{jj} = 'No';
+                
+                % What is the mode of faliure?
+                mode{jj} = 'N/A';
+            end
+        end
+    end
+
+    function [fail, mode] = maxStrainCriterion(strength, ...
+            superimposedParam)
+        
+                % Initializing 'fail' and 'mode' cell arrays
+        [fail, mode] = deal(cell(1, length(superimposedParam.locStress)));
+        
+                % Looping through each ply
+        for jj = 1:length(superimposedParam.locStress)
+            
+            % Checking for fiber faliure
+            if (superimposedParam.locStrain(1, 1, jj) >= ...
+                    strength.Xe) || ...
+                    (superimposedParam.locStrain(2, 1, jj) >= ...
+                    strength.Ye)
+                
+                % Does laminate fail?
+                fail{jj} = 'Yes';
+                
+                % What is the mode of faliure?
+                mode{jj} = 'Fiber Faliure';
+                
+                % Checking for matrix faliure (Method 1)
+            elseif (superimposedParam.locStrain(1, 1, jj) ...
+                    <= strength.XePrime) || ...
+                    (superimposedParam.locStrain(2, 1, jj) <= ...
+                    strength.Yprime)
+                
+                % Does laminate fail?
+                fail{jj} = 'Yes';
+                
+                % What is the mode of faliure?
+                mode{jj} = 'Matrix';
+                
+            elseif abs(superimposedParam.locStrain(3, 1, jj)) >= ...
+                    strength.Se
+                
+                % Does laminate fail?
+                fail{jj} = 'Yes';
+                
+                % What is the mode of faliure?
+                mode{jj} = 'Matrix';
+                
+            else
+                
+                % Does laminate fail?
+                fail{jj} = 'No';
+                
+                % What is the mode of faliure?
+                mode{jj} = 'N/A';
+                
+            end
+        end
+    end
+
+    function [fail, mode] = tsaiHillCriterion(strength, superimposedParam)
+        
+                % Initializing 'fail' and 'mode' cell arrays
+        [fail, mode] = deal(cell(1, length(superimposedParam.locStress)));
+        
+                % Looping through each ply
+        for jj = 1:length(superimposedParam.locStress)
+            
+            % Variable to compare
+            comparisonVar = ...
+                ((superimposedParam.locStress(1, 1, jj) / ...
+                strength.X) ^ 2) + ...
+                ((superimposedParam.locStress(2, 1, jj) / ...
+                strength.Y) ^ 2) - ...
+                ((superimposedParam.locStress(1, 1, jj) / strength.X) * ...
+                (superimposedParam.locStress(2, 1, jj) / strength.X) + ...
+                ((superimposedParam.locStress(3, 1, jj) / ...
+                strength.S) ^ 2));
+            
+            if comparisonVar >= 1
+                
+                % Does laminate fail?
+                fail{jj} = 'Yes';
+                
+            else
+                
+                % Does laminate fail?
+                fail{jj} = 'No';
+                
+                % What is the mode of faliure?
+                mode{jj} = 'N/A';
+                
+            end    
+        end
+    end
+
+    function [fail, mode] = tsaiWuCriterion(strength, superimposedParam)
+        
+                % Initializing 'fail' and 'mode' cell arrays
+        [fail, mode] = deal(cell(1, length(superimposedParam.locStress)));
+        
+                % Looping through each ply
+        for jj = 1:length(superimposedParam.locStress)
+            
+            % Tsai-Wu criterion constants
+            constants.F11 = -1 / (strength.Xprime * strength.X);
+            constants.F1 = (1 / strength.X) + (1 / strength.Xprime);
+            constants.F22 = -1 / (strength.Yprime * strength.Y);
+            constants.F2 = (1 / strength.Y) + (1 / strength.Yprime);
+            constants.F12 = 1 / (2 * strength.Xprime * strength.X);
+            constants.F66 = 1 / (strength.S ^ 2);
+            
+            % Varibel to compare
+            comparisonVar = ...
+                (constants.F1 * ...
+                superimposedParam.locStress(1, 1, jj)) + ...
+                (constants.F2 * ...
+                superimposedParam.locStress(2, 1, jj)) + ...
+                (constants.F11 * ...
+                superimposedParam.locStress(1, 1, jj)^ 2) + ...
+                (constants.F22 * ...
+                superimposedParam.locStress(2, 1, jj)^ 2) + ...
+                (2 * constants.F12 * ...
+                superimposedParam.locStress(1, 1, jj) * ...
+                superimposedParam.locStress(2, 1, jj)) + ...
+                (constants.F66 * ...
+                superimposedParam.locStress(3, 1, jj) ^ 2);
+            
+            if comparisonVar >= 1
+                
+                % Does laminate fail?
+                fail{jj} = 'Yes';
+               
+                
+            else
+                
+                % Does laminate fail?
+                fail{jj} = 'No';
+                
+                % What is the mode of faliure?
+                mode{jj} = 'N/A';
+                
+            end
+        end
+    end
+
+end
+
+##### SOURCE END #####
+--></body></html>
