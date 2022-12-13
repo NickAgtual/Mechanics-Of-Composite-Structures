@@ -65,7 +65,6 @@ end
 toExport.write{6, 1} = 'z';
 for ii = 1:length(z)
     toExport.write{6, 1 + ii} = z(ii);
-    disp(z(ii))
 end
 
 % Writing midplane deformations

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>arrangeData</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-12"><meta name="DC.source" content="arrangeData.m"><style type="text/css">
+      --><title>arrangeData</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-13"><meta name="DC.source" content="arrangeData.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -68,10 +68,17 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
   </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Rearranging Existing Data</a></li><li><a href="#3">Creating Cell Array to Write to Excel</a></li><li><a href="#4">Exporting Data to Excel Sheet</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> [toExport] = arrangeData(superimposedParam, z, <span class="keyword">...</span>
-    deformationAtMidplain, hygrothermal, loading, inputStruct, GUI)
-</pre><h2 id="2">Rearranging Existing Data</h2><pre class="codeinput"><span class="comment">% Reshaping local stress &amp; strain vectors to 3 x n matrices</span>
-toExport.globStress = reshape(superimposedParam.globStress, [3, length(z)]);
-toExport.globStrain = reshape(superimposedParam.globStrain, [3, length(z)]);
+    deformationAtMidplain, hygrothermal, loading, inputStruct, <span class="keyword">...</span>
+    effectiveLaminatePropsMT, GUI)
+</pre><h2 id="2">Rearranging Existing Data</h2><pre class="codeinput"><span class="comment">% Reshaping global stress &amp; strain vectors to 3 x n matrices</span>
+toExport.globStress = reshape(superimposedParam.globStress, <span class="keyword">...</span>
+    [3, length(z)]);
+toExport.globStrain = reshape(superimposedParam.globStrain, <span class="keyword">...</span>
+    [3, length(z)]);
+
+<span class="comment">% Reshaping local stress &amp; strain vectors to 3 x n matrices</span>
+toExport.locStress = reshape(superimposedParam.locStress, [3, length(z)]);
+toExport.locStrain = reshape(superimposedParam.locStrain, [3, length(z)]);
 
 <span class="comment">% Separating midplane deformation</span>
 toExport.midplaneStrain = deformationAtMidplain(1:3);
@@ -80,10 +87,18 @@ toExport.midplaneCurverature = deformationAtMidplain(4:6);
 <span class="comment">% Total Loads</span>
 toExport.totalForces = hygrothermal.N + loading(1:3)';
 toExport.totalMoments = hygrothermal.M + loading(4:6)';
+
+<span class="comment">% Mechanical and Thermal Laminate Effective Properties</span>
+toExport.LEP = [effectiveLaminatePropsMT.Ex, <span class="keyword">...</span>
+    effectiveLaminatePropsMT.Ey, <span class="keyword">...</span>
+    effectiveLaminatePropsMT.Gxy, <span class="keyword">...</span>
+    effectiveLaminatePropsMT.vxy, <span class="keyword">...</span>
+    effectiveLaminatePropsMT.therm(1), <span class="keyword">...</span>
+    effectiveLaminatePropsMT.therm(2)]';
 </pre><pre class="codeoutput error">Not enough input arguments.
 
-Error in arrangeData (line 7)
-toExport.globStress = reshape(superimposedParam.globStress, [3, length(z)]);
+Error in arrangeData (line 8)
+toExport.globStress = reshape(superimposedParam.globStress, ...
 </pre><h2 id="3">Creating Cell Array to Write to Excel</h2><pre class="codeinput"><span class="comment">% Writing total forces and moments</span>
 <span class="keyword">for</span> ii = 1:6
 
@@ -117,7 +132,6 @@ toExport.write{5, 1} = <span class="string">'Ply'</span>;
 toExport.write{6, 1} = <span class="string">'z'</span>;
 <span class="keyword">for</span> ii = 1:length(z)
     toExport.write{6, 1 + ii} = z(ii);
-    disp(z(ii))
 <span class="keyword">end</span>
 
 <span class="comment">% Writing midplane deformations</span>
@@ -141,7 +155,36 @@ midplaneNames = {<span class="string">'eps0x'</span>, <span class="string">'eps0
     <span class="keyword">end</span>
 <span class="keyword">end</span>
 
-<span class="comment">% Writing local stress</span>
+<span class="comment">% Writing Effective Laminate properties</span>
+toExport.write{8, 7} = <span class="string">'Effective Laminate Properties'</span>;
+laminatePropNames = {<span class="string">'Ex'</span>, <span class="string">'Ey'</span>, <span class="string">'Gxy'</span>, <span class="string">'vxy'</span>, <span class="string">'ax'</span>, <span class="string">'ay'</span>};
+
+<span class="keyword">for</span> ii = 1:6
+
+    <span class="comment">% Writing Ex, Ey, Gxy</span>
+    <span class="keyword">if</span> (1 &lt;= ii) &amp;&amp; (ii &lt;= 3)
+
+        toExport.write{ii + 8, 7} = laminatePropNames{ii};
+        toExport.write{ii + 8, 8} = effectiveLaminatePropsMT.(<span class="keyword">...</span>
+            laminatePropNames{ii});
+
+    <span class="comment">% vxy</span>
+    <span class="keyword">elseif</span> ii == 4
+
+        toExport.write{ii + 5, 9} = laminatePropNames{ii};
+        toExport.write{ii + 5, 10} = effectiveLaminatePropsMT.(<span class="keyword">...</span>
+            laminatePropNames{ii});
+
+    <span class="keyword">elseif</span> (5 &lt;= ii) &amp;&amp; (ii &lt;= 6)
+
+        toExport.write{ii + 5, 9} = laminatePropNames{ii};
+        toExport.write{ii + 5, 10} = effectiveLaminatePropsMT.therm(ii <span class="keyword">...</span>
+            - 4);
+
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% Writing gloabl stress</span>
 toExport.write{13, 1} = <span class="string">'Global Stress'</span>;
 stressNames = {<span class="string">'sigma1'</span>, <span class="string">'sigma2'</span>, <span class="string">'sigma12'</span>};
 
@@ -161,12 +204,13 @@ stressNames = {<span class="string">'sigma1'</span>, <span class="string">'sigma
 
 <span class="keyword">end</span>
 
-<span class="comment">% Writing local strain</span>
+<span class="comment">% Writing gloabl strain</span>
 toExport.write{18, 1} = <span class="string">'Global Strain'</span>;
 strainNames = {<span class="string">'epsilon1'</span>, <span class="string">'epsilon2'</span>, <span class="string">'gamma12'</span>};
 
+
 <span class="keyword">for</span> ii = 1:length(strainNames)
-    <span class="keyword">for</span> jj = 1:length(toExport.globStress) + 1
+    <span class="keyword">for</span> jj = 1:length(toExport.globStrain) + 1
 
         <span class="keyword">if</span> jj == 1
 
@@ -180,18 +224,57 @@ strainNames = {<span class="string">'epsilon1'</span>, <span class="string">'eps
     <span class="keyword">end</span>
 
 <span class="keyword">end</span>
+
+<span class="comment">% Writing local strain</span>
+toExport.write{23, 1} = <span class="string">'Local Stress'</span>;
+
+<span class="keyword">for</span> ii = 1:length(stressNames)
+    <span class="keyword">for</span> jj = 1:length(toExport.locStress) + 1
+
+        <span class="keyword">if</span> jj == 1
+
+            toExport.write{ii + 23, 1} = stressNames{ii};
+
+        <span class="keyword">elseif</span> jj &gt; 1
+
+            toExport.write{ii + 23, jj } = toExport.locStress(ii, jj - 1);
+
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="comment">% Writing local strain</span>
+toExport.write{28, 1} = <span class="string">'Global Strain'</span>;
+
+<span class="keyword">for</span> ii = 1:length(strainNames)
+    <span class="keyword">for</span> jj = 1:length(toExport.locStrain) + 1
+
+        <span class="keyword">if</span> jj == 1
+
+            toExport.write{ii + 28, 1} = strainNames{ii};
+
+        <span class="keyword">elseif</span> jj &gt; 1
+
+            toExport.write{ii + 28, jj } = toExport.locStrain(ii, jj - 1);
+
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
 </pre><h2 id="4">Exporting Data to Excel Sheet</h2><pre class="codeinput"><span class="keyword">if</span> GUI == 0
 
     <span class="comment">% Question dialog box</span>
-    answer = questdlg(<span class="string">'Export Data to Excel?'</span>, <span class="string">'Export'</span>, <span class="string">'Yes'</span>, <span class="string">'No'</span>, <span class="string">'Yes'</span>);
+    answer = questdlg(<span class="string">'Export Data to Excel?'</span>, <span class="string">'Export'</span>, <span class="string">'Yes'</span>, <span class="string">'No'</span>,<span class="keyword">...</span>
+        <span class="string">'Yes'</span>);
 
     <span class="comment">% Handle response</span>
     <span class="keyword">switch</span> answer
         <span class="keyword">case</span> <span class="string">'Yes'</span>
             <span class="comment">% Creating file name using current date and time</span>
             dateTime = datestr(now, <span class="string">'ddmmyy-HHMM'</span>);
-            toExport.fileName = strcat(<span class="string">'Composite Analysis - '</span>, dateTime, <span class="keyword">...</span>
-                <span class="string">'.xlsx'</span>);
+            toExport.fileName = strcat(<span class="string">'Composite Analysis - '</span>,<span class="keyword">...</span>
+                dateTime, <span class="string">'.xlsm'</span>);
 
             <span class="comment">% Writing to excel file</span>
             writecell(toExport.write,toExport.fileName)
@@ -206,13 +289,20 @@ strainNames = {<span class="string">'epsilon1'</span>, <span class="string">'eps
 </pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 function [toExport] = arrangeData(superimposedParam, z, ...
-    deformationAtMidplain, hygrothermal, loading, inputStruct, GUI)
+    deformationAtMidplain, hygrothermal, loading, inputStruct, ...
+    effectiveLaminatePropsMT, GUI)
 
 %% Rearranging Existing Data
 
+% Reshaping global stress & strain vectors to 3 x n matrices
+toExport.globStress = reshape(superimposedParam.globStress, ...
+    [3, length(z)]);
+toExport.globStrain = reshape(superimposedParam.globStrain, ...
+    [3, length(z)]);
+
 % Reshaping local stress & strain vectors to 3 x n matrices
-toExport.globStress = reshape(superimposedParam.globStress, [3, length(z)]);
-toExport.globStrain = reshape(superimposedParam.globStrain, [3, length(z)]);
+toExport.locStress = reshape(superimposedParam.locStress, [3, length(z)]);
+toExport.locStrain = reshape(superimposedParam.locStrain, [3, length(z)]);
 
 % Separating midplane deformation
 toExport.midplaneStrain = deformationAtMidplain(1:3);
@@ -221,6 +311,14 @@ toExport.midplaneCurverature = deformationAtMidplain(4:6);
 % Total Loads
 toExport.totalForces = hygrothermal.N + loading(1:3)';
 toExport.totalMoments = hygrothermal.M + loading(4:6)';
+
+% Mechanical and Thermal Laminate Effective Properties
+toExport.LEP = [effectiveLaminatePropsMT.Ex, ...
+    effectiveLaminatePropsMT.Ey, ...
+    effectiveLaminatePropsMT.Gxy, ...
+    effectiveLaminatePropsMT.vxy, ...
+    effectiveLaminatePropsMT.therm(1), ...
+    effectiveLaminatePropsMT.therm(2)]';
 
 %% Creating Cell Array to Write to Excel
 
@@ -257,7 +355,6 @@ end
 toExport.write{6, 1} = 'z';
 for ii = 1:length(z)
     toExport.write{6, 1 + ii} = z(ii);
-    disp(z(ii))
 end
 
 % Writing midplane deformations
@@ -281,7 +378,36 @@ for ii = 1:6
     end
 end
 
-% Writing local stress
+% Writing Effective Laminate properties
+toExport.write{8, 7} = 'Effective Laminate Properties';
+laminatePropNames = {'Ex', 'Ey', 'Gxy', 'vxy', 'ax', 'ay'};
+
+for ii = 1:6
+    
+    % Writing Ex, Ey, Gxy
+    if (1 <= ii) && (ii <= 3)
+        
+        toExport.write{ii + 8, 7} = laminatePropNames{ii};
+        toExport.write{ii + 8, 8} = effectiveLaminatePropsMT.(...
+            laminatePropNames{ii});
+        
+    % vxy
+    elseif ii == 4
+        
+        toExport.write{ii + 5, 9} = laminatePropNames{ii};
+        toExport.write{ii + 5, 10} = effectiveLaminatePropsMT.(...
+            laminatePropNames{ii});
+        
+    elseif (5 <= ii) && (ii <= 6)
+        
+        toExport.write{ii + 5, 9} = laminatePropNames{ii};
+        toExport.write{ii + 5, 10} = effectiveLaminatePropsMT.therm(ii ...
+            - 4);
+        
+    end
+end
+
+% Writing gloabl stress
 toExport.write{13, 1} = 'Global Stress';
 stressNames = {'sigma1', 'sigma2', 'sigma12'};
 
@@ -301,12 +427,13 @@ for ii = 1:length(stressNames)
     
 end
 
-% Writing local strain
+% Writing gloabl strain
 toExport.write{18, 1} = 'Global Strain';
 strainNames = {'epsilon1', 'epsilon2', 'gamma12'};
 
+
 for ii = 1:length(strainNames)
-    for jj = 1:length(toExport.globStress) + 1
+    for jj = 1:length(toExport.globStrain) + 1
         
         if jj == 1
             
@@ -321,20 +448,59 @@ for ii = 1:length(strainNames)
     
 end
 
+% Writing local strain
+toExport.write{23, 1} = 'Local Stress';
+
+for ii = 1:length(stressNames)
+    for jj = 1:length(toExport.locStress) + 1
+        
+        if jj == 1
+            
+            toExport.write{ii + 23, 1} = stressNames{ii};
+            
+        elseif jj > 1
+            
+            toExport.write{ii + 23, jj } = toExport.locStress(ii, jj - 1);
+            
+        end
+    end
+    
+end
+
+% Writing local strain
+toExport.write{28, 1} = 'Global Strain';
+
+for ii = 1:length(strainNames)
+    for jj = 1:length(toExport.locStrain) + 1
+        
+        if jj == 1
+            
+            toExport.write{ii + 28, 1} = strainNames{ii};
+            
+        elseif jj > 1
+            
+            toExport.write{ii + 28, jj } = toExport.locStrain(ii, jj - 1);
+            
+        end
+    end
+    
+end
+
 %% Exporting Data to Excel Sheet
 
 if GUI == 0
     
     % Question dialog box
-    answer = questdlg('Export Data to Excel?', 'Export', 'Yes', 'No', 'Yes');
+    answer = questdlg('Export Data to Excel?', 'Export', 'Yes', 'No',...
+        'Yes');
     
     % Handle response
     switch answer
         case 'Yes'
             % Creating file name using current date and time
             dateTime = datestr(now, 'ddmmyy-HHMM');
-            toExport.fileName = strcat('Composite Analysis - ', dateTime, ...
-                '.xlsx');
+            toExport.fileName = strcat('Composite Analysis - ',...
+                dateTime, '.xlsm');
             
             % Writing to excel file
             writecell(toExport.write,toExport.fileName)

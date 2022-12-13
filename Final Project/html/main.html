@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>main</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-12"><meta name="DC.source" content="main.m"><style type="text/css">
+      --><title>main</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-13"><meta name="DC.source" content="main.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -132,8 +132,6 @@ loading = zeros(1, 6);
 <span class="comment">% If no inputs to main function, the defaul values are as follows</span>
 <span class="keyword">elseif</span> nargin == 0
 
-    disp(<span class="string">"HERE"</span>)
-
     <span class="comment">% Boolean var signifying wether GUI was used</span>
     GUI = 0;
 
@@ -176,20 +174,19 @@ loading = zeros(1, 6);
         <span class="string">'Input Error'</span>);
 
 <span class="keyword">end</span>
-</pre><pre class="codeoutput">HERE
 </pre><h2 id="3">Main Code Body</h2><pre class="codeinput"><span class="comment">% Creating modified stackup sequence accounting for 'middle/zero' ply</span>
 [ssMod] = modifiedLayup(ss);
 
 <span class="comment">% Create Lamina strct with Qbar</span>
-[Qbar, S, Tepsilon, QbarT] = reducedTransformedStiffnessMat(moduli, <span class="keyword">...</span>
-    ssMod, ss);
+[Qbar, S, Tepsilon] = reducedTransformedStiffnessMat(moduli, <span class="keyword">...</span>
+    ssMod);
 
 <span class="comment">% Add Sbar to lamina struct</span>
 [Sbar, Tsigma] = reducedTransformedComplianceMat(S, ssMod);
 
 <span class="comment">% Create laminate strcture with deformationAtMidplane &amp; ABD matrix</span>
 [deformationAtMidplane, z, ABD] = midplaneDeformation(loading, Qbar, <span class="keyword">...</span>
-    ssMod, t, ss, QbarT);
+    ssMod, t, ss);
 
 <span class="comment">% Add global stress to lamina struct</span>
 [globLaminaStress] = globalLaminaStress(deformationAtMidplane, <span class="keyword">...</span>
@@ -219,91 +216,8 @@ loading = zeros(1, 6);
 
 <span class="comment">% Arrange data for exporting</span>
 [toExport] = arrangeData(superimposedParam, z, deformationAtMidplane, <span class="keyword">...</span>
-    hygrothermal, loading, inputStruct, GUI);
-</pre><pre class="codeoutput">
-tttt(:,:,1) =
-
-   1.0e+06 *
-
-    7.5114    0.3979         0
-    0.3979    1.4211         0
-         0         0    0.7300
-
-
-tttt(:,:,2) =
-
-   1.0e+06 *
-
-    7.5114    0.3979         0
-    0.3979    1.4211         0
-         0         0    0.7300
-
-
-tttt(:,:,3) =
-
-   1.0e+06 *
-
-    3.1621    1.7021    1.5226
-    1.7021    3.1621    1.5226
-    1.5226    1.5226    2.0342
-
-
-tttt(:,:,4) =
-
-   1.0e+06 *
-
-    3.1621    1.7021   -1.5226
-    1.7021    3.1621   -1.5226
-   -1.5226   -1.5226    2.0342
-
-
-tttt(:,:,5) =
-
-   1.0e+06 *
-
-    3.1621    1.7021   -1.5226
-    1.7021    3.1621   -1.5226
-   -1.5226   -1.5226    2.0342
-
-
-tttt(:,:,6) =
-
-   1.0e+06 *
-
-    3.1621    1.7021    1.5226
-    1.7021    3.1621    1.5226
-    1.5226    1.5226    2.0342
-
-
-tttt(:,:,7) =
-
-   1.0e+06 *
-
-    7.5114    0.3979         0
-    0.3979    1.4211         0
-         0         0    0.7300
-
-
-tttt(:,:,8) =
-
-   1.0e+06 *
-
-    7.5114    0.3979         0
-    0.3979    1.4211         0
-         0         0    0.7300
-
-
-z =
-
-  Columns 1 through 7
-
-   -0.0360   -0.0270   -0.0180   -0.0090         0    0.0090    0.0180
-
-  Columns 8 through 9
-
-    0.0270    0.0360
-
-   -0.0360
+    hygrothermal, loading, inputStruct, effectiveLaminatePropsMT, GUI);
+</pre><pre class="codeoutput">   -0.0360
 
    -0.0270
 
@@ -321,8 +235,109 @@ z =
 
     0.0360
 
-</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <img vspace="5" hspace="5" src="main_02.png" alt=""> <pre class="codeinput"><span class="keyword">end</span>
-</pre><pre class="codeoutput">
+</pre><pre class="codeinput"><span class="keyword">end</span>
+</pre><pre class="codeoutput">Warning: The following error was caught while executing 'onCleanup' class
+destructor:
+Error using matlab.ui.Figure/set
+Invalid or deleted object.
+
+Error in internal.matlab.publish.PublishFigures&gt;printSnap/restoreFigure (line
+245)
+        set(f,'PaperPosition',origPaperPosition);
+
+Error in
+internal.matlab.publish.PublishFigures&gt;@()restoreFigure(f,origPaperPosition,params,origValues)
+(line 243)
+resetFigureObj = onCleanup(@()restoreFigure(f, origPaperPosition, params,
+origValues));
+
+Error in onCleanup/delete (line 80)
+            obj.task();
+
+Error in internal.matlab.publish.PublishFigures&gt;printSnap (line 232)
+comment = getDebugCommentForImage(f);
+
+Error in internal.matlab.publish.PublishFigures.snapFigure (line 178)
+                    feval([method 'Snap'],f,imgFilename,imageFormat,opts);
+
+Error in internal.matlab.publish.PublishFigures/snap (line 64)
+                imgFilename =
+                obj.snapFigure(f,obj.options.filenameGenerator(),obj.options);
+
+Error in internal.matlab.publish.PublishFigures/leavingCell (line 112)
+                    imgFilename = snap(obj, f);
+
+Error in snapnow&gt;leavingCell (line 208)
+            newFiles = data.plugins(iPlugins).instance.leavingCell(iCell);
+
+Error in snapnow (line 144)
+                        data = leavingCell(iCell(k), data, doCapture(k));
+
+Error in main (line 157)
+end
+
+Error in evalmxdom&gt;instrumentAndRun (line 109)
+text = evalc(evalstr);
+
+Error in evalmxdom (line 21)
+[data,text,laste] =
+instrumentAndRun(file,cellBoundaries,imageDir,imagePrefix,options);
+
+Error in publish
+
+Error in mdbpublish (line 55)
+outputPath = publish(file, options); 
+Error using internal.matlab.publish.PublishFigures&gt;printSnap (line 275)
+Unable to write to C:\Users\jaagt\Documents\Nick_Git\Mechanics-Of-Composite-Structures\Final Project\html.
+FILEATTRIB output is
+
+  archive:0
+  system:0
+  hidden:0
+  directory:1
+  UserRead:1
+  UserWrite:1
+  UserExecute:1
+  GroupRead:NaN
+  GroupWrite:NaN
+  GroupExecute:NaN
+  OtherRead:NaN
+  OtherWrite:NaN
+  OtherExecute:NaN
+
+Error in internal.matlab.publish.PublishFigures.snapFigure (line 178)
+                    feval([method 'Snap'],f,imgFilename,imageFormat,opts);
+
+Error in internal.matlab.publish.PublishFigures/snap (line 64)
+                imgFilename = obj.snapFigure(f,obj.options.filenameGenerator(),obj.options);
+
+Error in internal.matlab.publish.PublishFigures/leavingCell (line 112)
+                    imgFilename = snap(obj, f);
+
+Error in snapnow&gt;leavingCell (line 208)
+            newFiles = data.plugins(iPlugins).instance.leavingCell(iCell);
+
+Error in snapnow (line 144)
+                        data = leavingCell(iCell(k), data, doCapture(k));
+
+Error in main (line 157)
+end
+
+Error in evalmxdom&gt;instrumentAndRun (line 109)
+text = evalc(evalstr);
+
+Error in evalmxdom (line 21)
+[data,text,laste] = instrumentAndRun(file,cellBoundaries,imageDir,imagePrefix,options);
+
+Error in publish
+
+Error in mdbpublish (line 55)
+outputPath = publish(file, options);
+
+Caused by:
+    Error using adjustbackground
+    The state of HGUsingMATLABClasses for ADJUSTBACKGROUND 'restore' is not the same as when ADJUSTBACKGROUND 'save' was run; unable to continue.
+
 ans = 
 
   1&times;4 struct array with fields:
@@ -400,8 +415,6 @@ if nargin == 1
 % If no inputs to main function, the defaul values are as follows
 elseif nargin == 0
     
-    disp("HERE")
-    
     % Boolean var signifying wether GUI was used
     GUI = 0;
     
@@ -451,15 +464,15 @@ end
 [ssMod] = modifiedLayup(ss);
 
 % Create Lamina strct with Qbar
-[Qbar, S, Tepsilon, QbarT] = reducedTransformedStiffnessMat(moduli, ...
-    ssMod, ss);
+[Qbar, S, Tepsilon] = reducedTransformedStiffnessMat(moduli, ...
+    ssMod);
 
 % Add Sbar to lamina struct
 [Sbar, Tsigma] = reducedTransformedComplianceMat(S, ssMod);
 
 % Create laminate strcture with deformationAtMidplane & ABD matrix
 [deformationAtMidplane, z, ABD] = midplaneDeformation(loading, Qbar, ...
-    ssMod, t, ss, QbarT);
+    ssMod, t, ss);
 
 % Add global stress to lamina struct
 [globLaminaStress] = globalLaminaStress(deformationAtMidplane, ...
@@ -489,7 +502,7 @@ end
 
 % Arrange data for exporting
 [toExport] = arrangeData(superimposedParam, z, deformationAtMidplane, ...
-    hygrothermal, loading, inputStruct, GUI);
+    hygrothermal, loading, inputStruct, effectiveLaminatePropsMT, GUI);
 
 end
 ##### SOURCE END #####
