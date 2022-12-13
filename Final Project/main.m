@@ -1,4 +1,5 @@
-function [faliure, toExport, plotStress, plotStrain, z] = main(varargin)
+function [faliure, toExport, plotStress, plotStrain, z, ...
+    hygrothermal] = main(varargin)
 %% Inputs 
 
 % Structure fields (For lamina & strength properties)
@@ -90,15 +91,15 @@ elseif nargin == 0
     hygrothermal.alpha = [-.5 * 10 ^ -6, 15 * 10 ^ -6, 0]; % 1/F
     
     % Temperature conditions
-    hygrothermal.T0 = 100;
-    hygrothermal.Tf = 100;
+    hygrothermal.T0 = 0;
+    hygrothermal.Tf = -250;
     
     % Loading
-    loading = [0 0 896 0 0 0]; % 1:3 = forces 4:6 = moments
+    loading = [0 0 0 0 0 0]; % 1:3 = forces 4:6 = moments
     
     % Lamina thickness
-    t = .009;
-    ss = [45 -45 90 0 0 90 -45 45]; % Stackup sequence
+    t = .005;
+    ss = [0 30 -30 -30 30 0]; % Stackup sequence
 
 else
     
@@ -139,14 +140,14 @@ end
 [superimposedParam] = superposition(laminaStressStrain, hygrothermal);
 
     % Plotting global stress and strain
-[plotStress, plotStrain] = stressStrainPlots(superimposedParam, z, GUI)
+[plotStress, plotStrain] = stressStrainPlots(superimposedParam, z, GUI);
 
 
 % Checking faliure criteria
 [faliure] = faliureCriteria(strength, superimposedParam);
 
 % Effective mechanical and thermal laminate properties
-[effectiveLaminatePropsMech] = effectiveLaminateProps(ABD, t, ss, ...
+[effectiveLaminatePropsMT] = effectiveLaminateProps(ABD, t, ss, ...
     hygrothermal);
 
 % Arrange data for exporting

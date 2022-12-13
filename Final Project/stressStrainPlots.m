@@ -9,11 +9,11 @@ for ii = 1:length(stressStrainType)
         
         % Concatenating local stress values (3 filed for each stress type)
         plotStress.(stressStrainType{ii})(jj) = ...
-            superimposedParam.locStress(ii, 1, jj);
+            superimposedParam.globStress(ii, 1, jj);
         
         % Concatenating local strain values (3 fields for each strain type)
         plotStrain.(stressStrainType{ii})(jj) = ...
-            superimposedParam.locStrain(ii, 1, jj);
+            superimposedParam.globStrain(ii, 1, jj);
     end
 end
 
@@ -39,7 +39,7 @@ if GUI == 0
         
         % Plot descriptors
         xlabel('\emph {Global Stress (psi)}','fontsize',12, ...
-            Interpreter', 'latex');
+            'Interpreter', 'latex');
         ylabel('\emph {z-Location (in)}','fontsize',12,'Interpreter', ...
             'latex');
         title(titleText,'fontsize',14,'Interpreter',...

@@ -1,5 +1,4 @@
-function [hygrothermal, laminaStressStrain, superimposedParam, faliure, ...
-    effectiveLaminatePropsMech] = main(varargin)
+function [faliure, toExport, plotStress, plotStrain, z] = main(varargin)
 %% Inputs 
 
 % Structure fields (For lamina & strength properties)
@@ -19,50 +18,55 @@ loading = zeros(1, 6);
 % If the code is executed via GUI
 if nargin == 1
     
+    % Boolean var signifying wether GUI was used
+    GUI = 1;
+    
     % Populating moduli and strength structures
-    for ii = 1:length(inputStruct)
+    for ii = 1:length(inputStruct.fields)
         
         if (1 <= ii) && (ii <= 4)
     
         % Lamina properties
         moduli.(inputStruct.fields{ii}) = ...
-            varargin.(inputStruct.fields{ii}) * ...
+            varargin{1}.(inputStruct.fields{ii}) * ...
             inputStruct.conversion(ii);
         
         elseif (5 <= ii) && (ii <= length(inputStruct.fields))
             
         % Strength properties
         strength.(inputStruct.fields{ii}) = ...
-            varargin.(inputStruct.fields{ii}) * ...
+            varargin{1}.(inputStruct.fields{ii}) * ...
             inputStruct.conversion(ii);
         
         end
     end
     
     % Populating hygrothermal structure with local values
-    hygrothermal.alpha = [varargin.alpha1 varargin.alpha2 0]; % 1/F
+    hygrothermal.alpha = [varargin{1}.alpha1 varargin{1}.alpha2 0]; % 1/F
     
     % Populating hygrothermal structure with temperatures
-    hygrothermal.T0 = varargin.T0; % deg F
-    hygrothermal.Tf = varargin.Tf; % deg F
+    hygrothermal.T0 = varargin{1}.T0; % deg F
+    hygrothermal.Tf = varargin{1}.Tf; % deg F
     
     % Reading loading from GUI input
     for ii = 1:length(inputStruct.loading)
         
         % Populating loading vector
-        loading(ii) = varargin.(inputStruct.loading{ii});
+        loading(ii) = varargin{1}.(inputStruct.loading{ii});
         
     end
     
     % Lamina thickness
-    t = varargin.PlyThickness;
+    t = varargin{1}.PlyThickness;
     
     % Stacking sequence
-    ss = varargin.ss;
+    ss = varargin{1}.ss;
     
-
 % If no inputs to main function, the defaul values are as follows
 elseif nargin == 0
+    
+    % Boolean var signifying wether GUI was used
+    GUI = 0;
     
     % Lamina Properties
     moduli.E1 = 20 * 10^6;
@@ -90,15 +94,16 @@ elseif nargin == 0
     hygrothermal.Tf = 100;
     
     % Loading
-    loading = [0 0 896 0 0 0]; % 1:3 = forces 4:6 = moments
+    loading = [50 0 0 0 0 0]; % 1:3 = forces 4:6 = moments
     
     % Lamina thickness
-    t = .009;
-    ss = [45 -45 90 0 0 90 -45 45]; % Stackup sequence
+    t = .005;
+    ss = [0 30 -30 -30 30 0]; % Stackup sequence
 
 else
     
-    errorBox = errordlg('Invalid Number of Input Arguments',...
+    % Error dialog box if invalid number of input arguments
+    errordlg('Invalid Number of Input Arguments',...
         'Input Error');
     
 end
@@ -133,8 +138,9 @@ end
 % Superimposing stress and strain
 [superimposedParam] = superposition(laminaStressStrain, hygrothermal);
 
-% Plotting global stress and strain
-stressStrainPlots(superimposedParam, z)
+    % Plotting global stress and strain
+[plotStress, plotStrain] = stressStrainPlots(superimposedParam, z, GUI)
+
 
 % Checking faliure criteria
 [faliure] = faliureCriteria(strength, superimposedParam);
@@ -142,5 +148,9 @@ stressStrainPlots(superimposedParam, z)
 % Effective mechanical and thermal laminate properties
 [effectiveLaminatePropsMech] = effectiveLaminateProps(ABD, t, ss, ...
     hygrothermal);
+
+% Arrange data for exporting
+[toExport] = arrangeData(superimposedParam, z, deformationAtMidplane, ...
+    hygrothermal, loading, inputStruct, GUI);
 
 end
