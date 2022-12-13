@@ -1,0 +1,325 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW3_Q4</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-08"><meta name="DC.source" content="HW3_Q4.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">HW3 Q4</a></li><li><a href="#2">Material Properties</a></li><li><a href="#3">1) Calculate the A, B, D, a, b, d Matrices for the Layup [45/90/30/0]</a></li><li><a href="#4">2) Compute the Midplane Strains and Curvatures</a></li><li><a href="#5">3) Compute Local Lamina Stress and Strain</a></li></ul></div><h2 id="1">HW3 Q4</h2><pre class="codeinput">clear; clc; close <span class="string">all</span>
+</pre><h2 id="2">Material Properties</h2><pre class="codeinput"><span class="comment">% Longitudinal modulus</span>
+lamina.E1 = 29.2 * 10 ^ 6; <span class="comment">% psi</span>
+
+<span class="comment">% Transverse moudulus</span>
+lamina.E2 = 3.15 * 10 ^ 6; <span class="comment">% psi</span>
+
+<span class="comment">% In-plane shear modulus</span>
+lamina.G12 = .78 * 10 ^ 6; <span class="comment">% psi</span>
+
+<span class="comment">% Poisson's ratio</span>
+lamina.v12 = .17;
+
+<span class="comment">% Stacking sequences</span>
+laminate.layup = [45 90 30 0];
+
+<span class="comment">% Thickness of lamina</span>
+lamina.thickness = .008; <span class="comment">% in</span>
+
+<span class="comment">% Lamina coordinates within laminate</span>
+
+z = zeros(1, length(laminate.layup) / 2);
+
+<span class="keyword">for</span> ii = 1: length(laminate.layup) / 2
+
+    z(ii) = lamina.thickness * ii;
+
+<span class="keyword">end</span>
+
+laminate.zCoord = [-flip(z) 0 z];
+laminate.zCoordMod = laminate.zCoord(laminate.zCoord ~= 0);
+</pre><h2 id="3">1) Calculate the A, B, D, a, b, d Matrices for the Layup [45/90/30/0]</h2><pre class="codeinput"><span class="comment">% Compliance matrix</span>
+matrices.S = [(1 / lamina.E1) (-lamina.v12 / lamina.E1) 0;
+              (-lamina.v12 / lamina.E1) (1 / lamina.E2) 0;
+              0 0 (1 / lamina.G12)];
+
+<span class="comment">% Stiffness matrix</span>
+matrices.Q = inv(matrices.S);
+
+<span class="comment">% Initializing Qbar matrix</span>
+matrices.Qbar = zeros(3, 3, length(laminate.layup));
+
+<span class="comment">% Initializing strain transformation matrix</span>
+matrices.Tepsilon = zeros(3, 3, length(laminate.layup));
+
+<span class="keyword">for</span> ii = 1:length(laminate.layup)
+
+    <span class="comment">% Strain transformation matrix</span>
+    matrices.Tepsilon(:, :, ii) = [cosd(laminate.layup(ii))^2 <span class="keyword">...</span>
+        sind(laminate.layup(ii))^2 <span class="keyword">...</span>
+        cosd(laminate.layup(ii)) * sind(laminate.layup(ii));
+        sind(laminate.layup(ii))^2 <span class="keyword">...</span>
+        cosd(laminate.layup(ii))^2 <span class="keyword">...</span>
+        -cosd(laminate.layup(ii)) * sind(laminate.layup(ii));
+        -2 * cosd(laminate.layup(ii)) * sind(laminate.layup(ii)) <span class="keyword">...</span>
+        2 * cosd(laminate.layup(ii)) * sind(laminate.layup(ii)) <span class="keyword">...</span>
+        cosd(laminate.layup(ii))^2 - sind(laminate.layup(ii))^2];
+
+    <span class="comment">% Reduced transformed stiffness matrix</span>
+    matrices.Qbar(:, :, ii) = transpose(matrices.Tepsilon(:, :, ii)) * <span class="keyword">...</span>
+        matrices.Q * matrices.Tepsilon(:, :, ii);
+
+<span class="keyword">end</span>
+
+<span class="comment">% Initializing ABD matrices</span>
+[matrices.A, matrices.B, matrices.D] = deal(zeros(3, 3));
+
+<span class="comment">% Solving for ABD matrices</span>
+<span class="keyword">for</span> ii = 1:3
+    <span class="keyword">for</span> jj = 1:3
+        <span class="keyword">for</span> kk = 2:length(laminate.layup) + 1
+
+            matrices.A(ii, jj) = matrices.A(ii, jj) + <span class="keyword">...</span>
+                (matrices.Qbar(ii, jj, kk-1) * <span class="keyword">...</span>
+                (laminate.zCoord(kk) - laminate.zCoord(kk-1)));
+
+            matrices.B(ii, jj) = matrices.B(ii, jj) + <span class="keyword">...</span>
+                (.5 * (matrices.Qbar(ii, jj, kk-1) <span class="keyword">...</span>
+                * (laminate.zCoord(kk)^2 - laminate.zCoord(kk-1)^2)));
+
+            matrices.D(ii, jj) = matrices.D(ii, jj) + ((1/3) * <span class="keyword">...</span>
+                (matrices.Qbar(ii, jj, kk-1)<span class="keyword">...</span>
+                 * (laminate.zCoord(kk)^3 - laminate.zCoord(kk-1)^3)));
+
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% ABD matrix</span>
+matrices.ABD = [matrices.A matrices.B; matrices.B matrices.D];
+
+<span class="comment">% abd matrix</span>
+matrices.abd = inv(matrices.ABD);
+
+<span class="comment">% a matrix</span>
+matrices.a = matrices.abd(1:3, 1:3);
+
+<span class="comment">% b matrix</span>
+matrices.b = matrices.abd(1:3, 4:end);
+
+<span class="comment">% c matrix</span>
+matrices.d = matrices.abd(4:end, 4:end);
+</pre><h2 id="4">2) Compute the Midplane Strains and Curvatures</h2><pre class="codeinput"><span class="comment">% Applied loads</span>
+<span class="comment">% 1:3 = forces (lb/in)</span>
+<span class="comment">% 4:6 = moments (lbin/in)</span>
+laminate.loading = [50 0 0 10 0 -5]';
+
+<span class="comment">% Midplane deformation</span>
+laminate.midplaneDeformation = matrices.abd * laminate.loading;
+</pre><h2 id="5">3) Compute Local Lamina Stress and Strain</h2><pre class="codeinput"><span class="keyword">for</span> ii = 1:length(laminate.layup)
+
+    lamina.localStress(:, :, ii) = matrices.Qbar(:, :, ii) * <span class="keyword">...</span>
+        (laminate.midplaneDeformation(1: 3) + (laminate.zCoordMod(ii) * <span class="keyword">...</span>
+        laminate.midplaneDeformation(4: 6)));
+
+    lamina.localStrain(:, :, ii) = (laminate.midplaneDeformation(1: 3)<span class="keyword">...</span>
+        +(laminate.zCoordMod(ii) * laminate.midplaneDeformation(4: 6)));
+
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% HW3 Q4
+clear; clc; close all
+
+%% Material Properties
+
+% Longitudinal modulus
+lamina.E1 = 29.2 * 10 ^ 6; % psi
+
+% Transverse moudulus
+lamina.E2 = 3.15 * 10 ^ 6; % psi
+
+% In-plane shear modulus
+lamina.G12 = .78 * 10 ^ 6; % psi
+
+% Poisson's ratio
+lamina.v12 = .17;
+
+% Stacking sequences
+laminate.layup = [45 90 30 0];
+
+% Thickness of lamina
+lamina.thickness = .008; % in
+
+% Lamina coordinates within laminate
+
+z = zeros(1, length(laminate.layup) / 2);
+
+for ii = 1: length(laminate.layup) / 2
+    
+    z(ii) = lamina.thickness * ii;
+    
+end
+
+laminate.zCoord = [-flip(z) 0 z];
+laminate.zCoordMod = laminate.zCoord(laminate.zCoord ~= 0);
+
+%% 1) Calculate the A, B, D, a, b, d Matrices for the Layup [45/90/30/0]
+
+% Compliance matrix
+matrices.S = [(1 / lamina.E1) (-lamina.v12 / lamina.E1) 0;
+              (-lamina.v12 / lamina.E1) (1 / lamina.E2) 0;
+              0 0 (1 / lamina.G12)];
+          
+% Stiffness matrix
+matrices.Q = inv(matrices.S);
+
+% Initializing Qbar matrix
+matrices.Qbar = zeros(3, 3, length(laminate.layup));
+
+% Initializing strain transformation matrix
+matrices.Tepsilon = zeros(3, 3, length(laminate.layup));
+
+for ii = 1:length(laminate.layup)
+    
+    % Strain transformation matrix
+    matrices.Tepsilon(:, :, ii) = [cosd(laminate.layup(ii))^2 ...
+        sind(laminate.layup(ii))^2 ...
+        cosd(laminate.layup(ii)) * sind(laminate.layup(ii));
+        sind(laminate.layup(ii))^2 ...
+        cosd(laminate.layup(ii))^2 ...
+        -cosd(laminate.layup(ii)) * sind(laminate.layup(ii));
+        -2 * cosd(laminate.layup(ii)) * sind(laminate.layup(ii)) ...
+        2 * cosd(laminate.layup(ii)) * sind(laminate.layup(ii)) ...
+        cosd(laminate.layup(ii))^2 - sind(laminate.layup(ii))^2];
+    
+    % Reduced transformed stiffness matrix
+    matrices.Qbar(:, :, ii) = transpose(matrices.Tepsilon(:, :, ii)) * ...
+        matrices.Q * matrices.Tepsilon(:, :, ii);
+                    
+end
+
+% Initializing ABD matrices
+[matrices.A, matrices.B, matrices.D] = deal(zeros(3, 3));
+
+% Solving for ABD matrices
+for ii = 1:3
+    for jj = 1:3
+        for kk = 2:length(laminate.layup) + 1
+            
+            matrices.A(ii, jj) = matrices.A(ii, jj) + ...
+                (matrices.Qbar(ii, jj, kk-1) * ...
+                (laminate.zCoord(kk) - laminate.zCoord(kk-1)));
+            
+            matrices.B(ii, jj) = matrices.B(ii, jj) + ...
+                (.5 * (matrices.Qbar(ii, jj, kk-1) ...
+                * (laminate.zCoord(kk)^2 - laminate.zCoord(kk-1)^2)));
+            
+            matrices.D(ii, jj) = matrices.D(ii, jj) + ((1/3) * ...
+                (matrices.Qbar(ii, jj, kk-1)...
+                 * (laminate.zCoord(kk)^3 - laminate.zCoord(kk-1)^3)));
+            
+        end
+    end
+end
+
+% ABD matrix
+matrices.ABD = [matrices.A matrices.B; matrices.B matrices.D];
+
+% abd matrix
+matrices.abd = inv(matrices.ABD);
+
+% a matrix
+matrices.a = matrices.abd(1:3, 1:3);
+
+% b matrix
+matrices.b = matrices.abd(1:3, 4:end);
+
+% c matrix
+matrices.d = matrices.abd(4:end, 4:end);
+
+%% 2) Compute the Midplane Strains and Curvatures
+
+% Applied loads
+% 1:3 = forces (lb/in)
+% 4:6 = moments (lbin/in)
+laminate.loading = [50 0 0 10 0 -5]'; 
+
+% Midplane deformation
+laminate.midplaneDeformation = matrices.abd * laminate.loading;
+
+%% 3) Compute Local Lamina Stress and Strain 
+
+for ii = 1:length(laminate.layup)
+    
+    lamina.localStress(:, :, ii) = matrices.Qbar(:, :, ii) * ...
+        (laminate.midplaneDeformation(1: 3) + (laminate.zCoordMod(ii) * ...
+        laminate.midplaneDeformation(4: 6)));
+    
+    lamina.localStrain(:, :, ii) = (laminate.midplaneDeformation(1: 3)...
+        +(laminate.zCoordMod(ii) * laminate.midplaneDeformation(4: 6)));
+    
+end
+    
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,368 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW3_Q7</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-12-08"><meta name="DC.source" content="HW3_Q7.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">HW3_Q7</a></li><li><a href="#2">Given Properties and Conditions</a></li><li><a href="#3">Reduced Transfromed Stiffness Matrix</a></li><li><a href="#4">ABD Matrix</a></li><li><a href="#5">Global Hygrothermal Properties &amp; Free Strain</a></li><li><a href="#6">Hygrothermal Loads</a></li><li><a href="#7">Midplane deformation</a></li></ul></div><h2 id="1">HW3_Q7</h2><pre class="codeinput">clear; clc; close <span class="string">all</span>
+</pre><h2 id="2">Given Properties and Conditions</h2><p>Hygrothermal conditions</p><pre class="codeinput">hygrothermal.T1 = 180; <span class="comment">% deg C</span>
+hygrothermal.T2 = 30; <span class="comment">% deg C</span>
+hygrothermal.deltaT = hygrothermal.T2 - hygrothermal.T1;
+
+<span class="comment">% Mechanical properties</span>
+lamina.E1 = 140; <span class="comment">% GPa</span>
+lamina.E2 = 10; <span class="comment">% GPa</span>
+lamina.G12 = 6; <span class="comment">% GPa</span>
+lamina.v12 = .34;
+lamina.t = 1 * 10 ^ -3; <span class="comment">% m</span>
+
+<span class="comment">% Hygrothermal properties</span>
+hygrothermal.alpha1 = 0;
+hygrothermal.beta1 = 0;
+hygrothermal.alpha2 = 30 * 10 ^ -6; <span class="comment">% 1 / deg C</span>
+hygrothermal.beta2 = .55;
+
+<span class="comment">% Combining hygrothermal properties</span>
+hygrothermal.alpha = [hygrothermal.alpha1 hygrothermal.alpha2 0];
+hygrothermal.beta = [hygrothermal.beta1 hygrothermal.beta2 0];
+
+layup = [0 90 -90 0];
+laminate.zCoord = [-2*lamina.t -lamina.t 0 lamina.t 2*lamina.t];
+zMod = laminate.zCoord(laminate.zCoord ~= 0);
+</pre><h2 id="3">Reduced Transfromed Stiffness Matrix</h2><pre class="codeinput"><span class="comment">% Compliance matrix</span>
+matrices.S = [(1/ lamina.E1) (-lamina.v12 / lamina.E1) 0; <span class="keyword">...</span>
+              (-lamina.v12 / lamina.E1) (1 / lamina.E2) 0; <span class="keyword">...</span>
+              0 0 (1 / lamina.G12)];
+
+<span class="comment">% Stiffness matrix</span>
+matrices.Q = inv(matrices.S);
+
+<span class="keyword">for</span> ii = 1:length(layup)
+
+    matrices.Tepsilon(:, :, ii) = [cosd(layup(ii))^2 sind(layup(ii))^2 <span class="keyword">...</span>
+        ((cosd(layup(ii))) * (sind(layup(ii)))); sind(layup(ii))^2 <span class="keyword">...</span>
+        cosd(layup(ii))^2 (-(cosd(layup(ii))) * (sind(layup(ii)))); <span class="keyword">...</span>
+        (-2 * (cosd(layup(ii))) * (sind(layup(ii)))) <span class="keyword">...</span>
+        (2 * (cosd(layup(ii))) * (sind(layup(ii)))) <span class="keyword">...</span>
+        ((cosd(layup(ii))^2) - (sind(layup(ii))^2))];
+
+    matrices.Qbar(:, :, ii) = transpose(matrices.Tepsilon(:, :, ii)) * <span class="keyword">...</span>
+        matrices.Q * matrices.Tepsilon(:, :, ii);
+
+        matrices.Tsigma(:, :, ii) = [sind(layup(ii))^2 cosd(layup(ii))^2 <span class="keyword">...</span>
+        (2 *(cosd(layup(ii))) * (sind(layup(ii)))); cosd(layup(ii))^2 <span class="keyword">...</span>
+        sin(layup(ii))^2 (-2 * (cosd(layup(ii))) * (sind(layup(ii)))); <span class="keyword">...</span>
+        (-1 * (cosd(layup(ii))) * (sind(layup(ii)))) <span class="keyword">...</span>
+        (1 * (cosd(layup(ii))) * (sind(layup(ii)))) <span class="keyword">...</span>
+        ((cosd(layup(ii))^2) - (sind(layup(ii))^2))];
+
+<span class="keyword">end</span>
+</pre><h2 id="4">ABD Matrix</h2><pre class="codeinput"><span class="comment">% Initializing ABD matrices</span>
+[matrices.A, matrices.B, matrices.D] = deal(zeros(3, 3));
+
+<span class="comment">% Solving for ABD matrices</span>
+<span class="keyword">for</span> ii = 1:3
+    <span class="keyword">for</span> jj = 1:3
+        <span class="keyword">for</span> kk = 2:length(layup) + 1
+
+            matrices.A(ii, jj) = matrices.A(ii, jj) + <span class="keyword">...</span>
+                (matrices.Qbar(ii, jj, kk-1) * <span class="keyword">...</span>
+                (laminate.zCoord(kk) - laminate.zCoord(kk-1)));
+
+            matrices.B(ii, jj) = matrices.B(ii, jj) + <span class="keyword">...</span>
+                (.5 * (matrices.Qbar(ii, jj, kk-1) <span class="keyword">...</span>
+                * (laminate.zCoord(kk)^2 - laminate.zCoord(kk-1)^2)));
+
+            matrices.D(ii, jj) = matrices.D(ii, jj) + ((1/3) * <span class="keyword">...</span>
+                (matrices.Qbar(ii, jj, kk-1)<span class="keyword">...</span>
+                 * (laminate.zCoord(kk)^3 - laminate.zCoord(kk-1)^3)));
+
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% ABD Matrix</span>
+matrices.ABD = [matrices.A matrices.B; matrices.B matrices.D];
+</pre><h2 id="5">Global Hygrothermal Properties &amp; Free Strain</h2><pre class="codeinput"><span class="keyword">for</span> ii = 1:length(layup)
+
+    <span class="comment">% Global hygrothermal properties</span>
+    hygrothermal.alphaGlobal(:, :, ii) = inv(matrices.Tepsilon(:, :, ii)) * <span class="keyword">...</span>
+        hygrothermal.alpha';
+
+    <span class="comment">% Free strain</span>
+    hygrothermal.freeStrain(:, :, ii) = <span class="keyword">...</span>
+        (hygrothermal.alphaGlobal(:, :, ii) .* hygrothermal.deltaT);
+
+<span class="keyword">end</span>
+</pre><h2 id="6">Hygrothermal Loads</h2><pre class="codeinput"><span class="comment">% Initializing hygrothermal loads</span>
+[hygrothermal.Nprelim, hygrothermal.Mprelim] = deal(zeros(3, 1));
+
+<span class="comment">% Calculating forces and moments due to hygrothermal conditions</span>
+<span class="keyword">for</span> ii = 1:length(layup)
+
+    <span class="comment">% Forces (does not include mutliplication of temp diff.)</span>
+    hygrothermal.Nprelim = hygrothermal.Nprelim + ((matrices.Qbar(:, :, ii) <span class="keyword">...</span>
+        * hygrothermal.alphaGlobal(:, :, ii) .* <span class="keyword">...</span>
+        (laminate.zCoord(ii+1) - laminate.zCoord(ii))));
+
+    <span class="comment">% Moments (does not include mutliplication of temp diff.)</span>
+    hygrothermal.Mprelim = hygrothermal.Mprelim + ((matrices.Qbar(:, :, ii) * <span class="keyword">...</span>
+        hygrothermal.alphaGlobal(:, :, ii) * ((laminate.zCoord(ii + 1) ^ 2) <span class="keyword">...</span>
+        - (laminate.zCoord(ii) ^ 2))));
+<span class="keyword">end</span>
+
+<span class="comment">% Thermal Loads</span>
+hygrothermal.N = hygrothermal.Nprelim * hygrothermal.deltaT;
+hygrothermal.M = hygrothermal.Mprelim * hygrothermal.deltaT * .5;
+</pre><h2 id="7">Midplane deformation</h2><pre class="codeinput">hygrothermal.midplaneDeformation = inv(matrices.ABD) * <span class="keyword">...</span>
+    [hygrothermal.N; hygrothermal.M];
+
+<span class="keyword">for</span> ii = 1:length(layup)
+
+    hygrothermal.globStrain(:, :, ii) = <span class="keyword">...</span>
+        hygrothermal.midplaneDeformation(1:3) + <span class="keyword">...</span>
+        (laminate.zCoord(ii) * hygrothermal.midplaneDeformation(4:end)) - <span class="keyword">...</span>
+        hygrothermal.freeStrain(:, :, ii);
+<span class="keyword">end</span>
+
+<span class="comment">% Hygrothermal stress (lamina) and local strain</span>
+<span class="keyword">for</span> ii = 1:length(layup)
+
+    <span class="comment">% Global Stress</span>
+    hygrothermal.globStress(:, :, ii) = matrices.Qbar(:, :, ii) * <span class="keyword">...</span>
+        (hygrothermal.midplaneDeformation(1:3) + (zMod(ii) * <span class="keyword">...</span>
+        hygrothermal.midplaneDeformation(4:end)) - <span class="keyword">...</span>
+        hygrothermal.freeStrain(:, :, ii));
+
+    <span class="comment">% Local Stress</span>
+    hygrothermal.locStress(:, :, ii) = matrices.Tsigma(:, :, ii) * <span class="keyword">...</span>
+        hygrothermal.globStress(:, :, ii);
+
+    <span class="comment">% Local strain</span>
+    hygrothermal.locStrain(:, :, ii) = matrices.Tepsilon(:, :, ii) * <span class="keyword">...</span>
+        hygrothermal.globStrain(:, :, ii);
+
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% HW3_Q7
+clear; clc; close all
+%% Given Properties and Conditions
+% Hygrothermal conditions
+hygrothermal.T1 = 180; % deg C
+hygrothermal.T2 = 30; % deg C
+hygrothermal.deltaT = hygrothermal.T2 - hygrothermal.T1;
+
+% Mechanical properties
+lamina.E1 = 140; % GPa
+lamina.E2 = 10; % GPa
+lamina.G12 = 6; % GPa
+lamina.v12 = .34;
+lamina.t = 1 * 10 ^ -3; % m
+
+% Hygrothermal properties
+hygrothermal.alpha1 = 0;
+hygrothermal.beta1 = 0;
+hygrothermal.alpha2 = 30 * 10 ^ -6; % 1 / deg C
+hygrothermal.beta2 = .55;
+
+% Combining hygrothermal properties
+hygrothermal.alpha = [hygrothermal.alpha1 hygrothermal.alpha2 0];
+hygrothermal.beta = [hygrothermal.beta1 hygrothermal.beta2 0];
+
+layup = [0 90 -90 0];
+laminate.zCoord = [-2*lamina.t -lamina.t 0 lamina.t 2*lamina.t];
+zMod = laminate.zCoord(laminate.zCoord ~= 0);
+
+%% Reduced Transfromed Stiffness Matrix
+
+% Compliance matrix
+matrices.S = [(1/ lamina.E1) (-lamina.v12 / lamina.E1) 0; ...
+              (-lamina.v12 / lamina.E1) (1 / lamina.E2) 0; ...
+              0 0 (1 / lamina.G12)];
+
+% Stiffness matrix
+matrices.Q = inv(matrices.S);
+
+for ii = 1:length(layup)
+    
+    matrices.Tepsilon(:, :, ii) = [cosd(layup(ii))^2 sind(layup(ii))^2 ...
+        ((cosd(layup(ii))) * (sind(layup(ii)))); sind(layup(ii))^2 ...
+        cosd(layup(ii))^2 (-(cosd(layup(ii))) * (sind(layup(ii)))); ...
+        (-2 * (cosd(layup(ii))) * (sind(layup(ii)))) ...
+        (2 * (cosd(layup(ii))) * (sind(layup(ii)))) ...
+        ((cosd(layup(ii))^2) - (sind(layup(ii))^2))];
+    
+    matrices.Qbar(:, :, ii) = transpose(matrices.Tepsilon(:, :, ii)) * ...
+        matrices.Q * matrices.Tepsilon(:, :, ii);
+    
+        matrices.Tsigma(:, :, ii) = [sind(layup(ii))^2 cosd(layup(ii))^2 ...
+        (2 *(cosd(layup(ii))) * (sind(layup(ii)))); cosd(layup(ii))^2 ...
+        sin(layup(ii))^2 (-2 * (cosd(layup(ii))) * (sind(layup(ii)))); ...
+        (-1 * (cosd(layup(ii))) * (sind(layup(ii)))) ...
+        (1 * (cosd(layup(ii))) * (sind(layup(ii)))) ...
+        ((cosd(layup(ii))^2) - (sind(layup(ii))^2))];
+    
+end
+
+%% ABD Matrix
+
+% Initializing ABD matrices
+[matrices.A, matrices.B, matrices.D] = deal(zeros(3, 3));
+
+% Solving for ABD matrices
+for ii = 1:3
+    for jj = 1:3
+        for kk = 2:length(layup) + 1
+            
+            matrices.A(ii, jj) = matrices.A(ii, jj) + ...
+                (matrices.Qbar(ii, jj, kk-1) * ...
+                (laminate.zCoord(kk) - laminate.zCoord(kk-1)));
+            
+            matrices.B(ii, jj) = matrices.B(ii, jj) + ...
+                (.5 * (matrices.Qbar(ii, jj, kk-1) ...
+                * (laminate.zCoord(kk)^2 - laminate.zCoord(kk-1)^2)));
+            
+            matrices.D(ii, jj) = matrices.D(ii, jj) + ((1/3) * ...
+                (matrices.Qbar(ii, jj, kk-1)...
+                 * (laminate.zCoord(kk)^3 - laminate.zCoord(kk-1)^3)));
+            
+        end
+    end
+end
+
+% ABD Matrix
+matrices.ABD = [matrices.A matrices.B; matrices.B matrices.D];
+
+%% Global Hygrothermal Properties & Free Strain
+for ii = 1:length(layup)
+    
+    % Global hygrothermal properties
+    hygrothermal.alphaGlobal(:, :, ii) = inv(matrices.Tepsilon(:, :, ii)) * ...
+        hygrothermal.alpha';
+    
+    % Free strain
+    hygrothermal.freeStrain(:, :, ii) = ...
+        (hygrothermal.alphaGlobal(:, :, ii) .* hygrothermal.deltaT);
+    
+end
+
+%% Hygrothermal Loads
+
+% Initializing hygrothermal loads
+[hygrothermal.Nprelim, hygrothermal.Mprelim] = deal(zeros(3, 1));
+
+% Calculating forces and moments due to hygrothermal conditions
+for ii = 1:length(layup)
+
+    % Forces (does not include mutliplication of temp diff.)
+    hygrothermal.Nprelim = hygrothermal.Nprelim + ((matrices.Qbar(:, :, ii) ...
+        * hygrothermal.alphaGlobal(:, :, ii) .* ...
+        (laminate.zCoord(ii+1) - laminate.zCoord(ii)))); 
+    
+    % Moments (does not include mutliplication of temp diff.)
+    hygrothermal.Mprelim = hygrothermal.Mprelim + ((matrices.Qbar(:, :, ii) * ...
+        hygrothermal.alphaGlobal(:, :, ii) * ((laminate.zCoord(ii + 1) ^ 2) ...
+        - (laminate.zCoord(ii) ^ 2))));
+end
+
+% Thermal Loads
+hygrothermal.N = hygrothermal.Nprelim * hygrothermal.deltaT;
+hygrothermal.M = hygrothermal.Mprelim * hygrothermal.deltaT * .5;
+
+%% Midplane deformation
+hygrothermal.midplaneDeformation = inv(matrices.ABD) * ...
+    [hygrothermal.N; hygrothermal.M];
+
+for ii = 1:length(layup)
+    
+    hygrothermal.globStrain(:, :, ii) = ...
+        hygrothermal.midplaneDeformation(1:3) + ...
+        (laminate.zCoord(ii) * hygrothermal.midplaneDeformation(4:end)) - ...
+        hygrothermal.freeStrain(:, :, ii);
+end
+
+% Hygrothermal stress (lamina) and local strain
+for ii = 1:length(layup)
+
+    % Global Stress
+    hygrothermal.globStress(:, :, ii) = matrices.Qbar(:, :, ii) * ...
+        (hygrothermal.midplaneDeformation(1:3) + (zMod(ii) * ...
+        hygrothermal.midplaneDeformation(4:end)) - ...
+        hygrothermal.freeStrain(:, :, ii));
+    
+    % Local Stress
+    hygrothermal.locStress(:, :, ii) = matrices.Tsigma(:, :, ii) * ...
+        hygrothermal.globStress(:, :, ii);
+    
+    % Local strain
+    hygrothermal.locStrain(:, :, ii) = matrices.Tepsilon(:, :, ii) * ...
+        hygrothermal.globStrain(:, :, ii);
+    
+end
+
+##### SOURCE END #####
+--></body></html>
