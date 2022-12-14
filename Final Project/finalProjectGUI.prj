@@ -1,0 +1,126 @@
+<deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
+  <configuration file="C:\Users\jaagt\Documents\Nick_Git\Mechanics-Of-Composite-Structures\Final Project\finalProjectGUI.prj" location="C:\Users\jaagt\Documents\Nick_Git\Mechanics-Of-Composite-Structures\Final Project" name="finalProjectGUI" target="target.ezdeploy.standalone" target-name="Application Compiler">
+    <param.appname>FAL</param.appname>
+    <param.icon />
+    <param.icons />
+    <param.version>1.0</param.version>
+    <param.authnamewatermark>Nicholas Agtual</param.authnamewatermark>
+    <param.email>nick.agtual@icloud.com</param.email>
+    <param.company>San Diego State University</param.company>
+    <param.summary />
+    <param.description />
+    <param.screenshot />
+    <param.guid />
+    <param.installpath.string>\San Diego State University\FAL\</param.installpath.string>
+    <param.installpath.combo>option.installpath.programfiles</param.installpath.combo>
+    <param.logo />
+    <param.install.notes />
+    <param.target.install.notes />
+    <param.intermediate>${PROJECT_ROOT}\finalProjectGUI\for_testing</param.intermediate>
+    <param.files.only>${PROJECT_ROOT}\finalProjectGUI\for_redistribution_files_only</param.files.only>
+    <param.output>${PROJECT_ROOT}\finalProjectGUI\for_redistribution</param.output>
+    <param.logdir>${PROJECT_ROOT}\finalProjectGUI</param.logdir>
+    <param.enable.clean.build>false</param.enable.clean.build>
+    <param.user.defined.mcr.options />
+    <param.target.type>subtarget.standalone</param.target.type>
+    <param.support.packages />
+    <param.web.mcr>true</param.web.mcr>
+    <param.package.mcr>false</param.package.mcr>
+    <param.no.mcr>false</param.no.mcr>
+    <param.web.mcr.name>MyAppInstaller_web</param.web.mcr.name>
+    <param.package.mcr.name>MyAppInstaller_mcr</param.package.mcr.name>
+    <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
+    <param.windows.command.prompt>true</param.windows.command.prompt>
+    <param.create.log>false</param.create.log>
+    <param.log.file />
+    <param.native.matlab>false</param.native.matlab>
+    <param.checkbox>false</param.checkbox>
+    <param.example />
+    <param.help.text>Syntax 
+	  -? 
+	 
+ Input Arguments 
+	 -?  print help on how to use the application 
+	 input arguments</param.help.text>
+    <unset>
+      <param.icon />
+      <param.icons />
+      <param.version />
+      <param.summary />
+      <param.description />
+      <param.screenshot />
+      <param.guid />
+      <param.installpath.string />
+      <param.installpath.combo />
+      <param.logo />
+      <param.install.notes />
+      <param.target.install.notes />
+      <param.intermediate />
+      <param.files.only />
+      <param.output />
+      <param.logdir />
+      <param.enable.clean.build />
+      <param.user.defined.mcr.options />
+      <param.target.type />
+      <param.support.packages />
+      <param.web.mcr />
+      <param.package.mcr />
+      <param.no.mcr />
+      <param.web.mcr.name />
+      <param.package.mcr.name />
+      <param.no.mcr.name />
+      <param.windows.command.prompt />
+      <param.create.log />
+      <param.log.file />
+      <param.native.matlab />
+      <param.checkbox />
+      <param.example />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\finalProjectGUI.mlapp</file>
+    </fileset.main>
+    <fileset.resources />
+    <fileset.package />
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}\arrangeData.m</file>
+      <file>${PROJECT_ROOT}\effectiveLaminateProps.m</file>
+      <file>${PROJECT_ROOT}\faliureCriteria.m</file>
+      <file>${PROJECT_ROOT}\globalLaminaStress.m</file>
+      <file>${PROJECT_ROOT}\hygrothermalEffetcs.m</file>
+      <file>${PROJECT_ROOT}\main.m</file>
+      <file>${PROJECT_ROOT}\midplaneDeformation.m</file>
+      <file>${PROJECT_ROOT}\modifiedLayup.m</file>
+      <file>${PROJECT_ROOT}\readExcel.m</file>
+      <file>${PROJECT_ROOT}\reducedTransformedComplianceMat.m</file>
+      <file>${PROJECT_ROOT}\reducedTransformedStiffnessMat.m</file>
+      <file>${PROJECT_ROOT}\stressStrainPlots.m</file>
+      <file>${PROJECT_ROOT}\superposition.m</file>
+      <file>${PROJECT_ROOT}\transformation.m</file>
+    </fileset.depfun>
+    <build-deliverables>
+      <file location="${PROJECT_ROOT}\finalProjectGUI\for_testing" name="FAL.exe" optional="false">C:\Users\jaagt\Documents\Nick_Git\Mechanics-Of-Composite-Structures\Final Project\finalProjectGUI\for_testing\FAL.exe</file>
+      <file location="${PROJECT_ROOT}\finalProjectGUI\for_testing" name="splash.png" optional="false">C:\Users\jaagt\Documents\Nick_Git\Mechanics-Of-Composite-Structures\Final Project\finalProjectGUI\for_testing\splash.png</file>
+      <file location="${PROJECT_ROOT}\finalProjectGUI\for_testing" name="readme.txt" optional="true">C:\Users\jaagt\Documents\Nick_Git\Mechanics-Of-Composite-Structures\Final Project\finalProjectGUI\for_testing\readme.txt</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2020b</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.0</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
