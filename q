@@ -1,0 +1,317 @@
+[33mcommit f6eb3a36a52e0ad264fe8d6a3e7aaa0864b02878[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Thu Dec 8 18:50:49 2022 -0800
+
+    Edited code for HW3 (sloppy)
+
+[33mcommit 596e082b182e5830bd5dd8b97ce5ac5f8f44a1bd[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Wed Dec 7 13:52:42 2022 -0800
+
+    Fixed questions 1 and 4
+
+[33mcommit 6d50d7f0ac4a449afef0d0a8c024088e3e9abf44[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Tue Dec 6 19:46:00 2022 -0800
+
+    Added plot descriptors for global stress/strain in lamina
+
+[33mcommit ad31536269bfd86b58e6c2e1e2611343444f65a6[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sun Dec 4 17:35:25 2022 -0800
+
+    Fixed hygrothermal calculations
+
+[33mcommit 65d6760663a1562a25418945bdd728ae403e9f89[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sun Dec 4 13:18:05 2022 -0800
+
+    Fixed bug in stress transformation matrix
+
+[33mcommit 55a13bb450f4fce5aadef85c1b816a77cc846c11[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sun Dec 4 11:34:56 2022 -0800
+
+    Created fucntion to pupulate edit fields with excel data
+
+[33mcommit 8ccba0a931ca6c3c38654fd531bdd093cb6ad1c1[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sat Dec 3 20:01:16 2022 -0800
+
+    Added unit conversion to convert to imperial for all input parameters
+
+[33mcommit c7103f69d61c1e85482f17e262730c768c2807cf[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sat Dec 3 14:18:15 2022 -0800
+
+    Automated process of caluclating z-coordinate for each ply
+
+[33mcommit 18f38660bfdfc025f70607852fa183f002b4733b[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sat Dec 3 13:30:39 2022 -0800
+
+    Added superposition calcualtions
+
+[33mcommit a60c68bcc3e45297d1ad6b790d8649808014d88a[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sat Dec 3 13:03:08 2022 -0800
+
+    Fixed issue with z-coordinate
+
+[33mcommit 97d4bef55a6a19b4df234015b8467e8b020ba316[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sat Dec 3 12:24:18 2022 -0800
+
+    Read all input fields in GUI
+
+[33mcommit 081e5291c48902a949fe1d1fe57c71f0c64430ee[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sat Dec 3 10:52:20 2022 -0800
+
+    Designed GUI input tab and created function to browse for excel file
+
+[33mcommit 58fa6cd667e8b8f868548ffb2eaa6149fbeeb3f7[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Fri Dec 2 22:19:32 2022 -0800
+
+    Commented code and added MATLAB file for superimposing stresses, strains, and loading
+
+[33mcommit 95a72f37ed626da657f1ee5158e852c9c6520845[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Fri Dec 2 21:32:22 2022 -0800
+
+    Completed Hygrothermal analysis
+
+[33mcommit e75d9f097eded5f4ae891e1c6b25d7f7c3689a40[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Fri Dec 2 15:57:14 2022 -0800
+
+    Test code for hygrothermal effects
+
+[33mcommit 71b8591cbdcda4d97ff55fd0e8a29087d235a978[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Tue Nov 29 16:34:08 2022 -0800
+
+    Solved fro Qbar and ABD matrices
+
+[33mcommit ed587b5bff12792a280da42c0b2a76488b8c699f[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Tue Nov 29 16:09:03 2022 -0800
+
+    Added MATLAB file for HW3_Q7 and inputted given information
+
+[33mcommit 4498482c3a29cdda3b57f175c5aaf201092e2d18[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Tue Nov 29 13:16:13 2022 -0800
+
+    Began solving for loads due to hygrothermal loading
+
+[33mcommit 8740935a69b22b33dea3c558da8f4995f443af05[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Mon Nov 21 17:17:56 2022 -0800
+
+    Calculated hygrothermal free strains
+
+[33mcommit 0d676d6d2c388fd18560d4b89c03a76c18fc05d6[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Mon Nov 21 17:04:21 2022 -0800
+
+    Calculated moments due to temeperature change
+
+[33mcommit 770516dd83f6b54be8a67eac6ecc4404a54d07a5[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Mon Nov 21 17:00:51 2022 -0800
+
+    Calculated force due to temperature conditions
+
+[33mcommit 9f001136a7f7ecc1c1ae3a750a06b98fddeb35c3[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Mon Nov 21 16:28:08 2022 -0800
+
+    Added calculation for local hygrothermal properties
+
+[33mcommit 749ce6af9f19acbc18dd928a8b2162300b269ee3[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Mon Nov 21 16:08:19 2022 -0800
+
+    Created MALTAB file to Calculate hygrothermal stresses
+
+[33mcommit 9383e9406cf97f94e6f194c1b8ea272ff7a94808[m[33m ([m[1;31morigin/1-organize-outputs[m[33m, [m[1;32m1-organize-outputs[m[33m)[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Mon Nov 21 15:56:29 2022 -0800
+
+    misc.
+
+[33mcommit 2e224ce967c8960e1aba72d1f9353b1b63d7c6f7[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sat Nov 12 16:06:07 2022 -0800
+
+    Calculated abd matrix
+
+[33mcommit c65fb5a94fa59a68d3de44f07edb303571b87474[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sat Nov 12 15:43:56 2022 -0800
+
+    Calculated ABD matrices for HW3 Q4
+
+[33mcommit ad68c9807e7466bab4de8179c31d1ca0fb6008a5[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sat Nov 12 15:29:51 2022 -0800
+
+    Added material properties for HW3 Q4 code
+
+[33mcommit 5451d30fe6ac1bcc103ce69329d8a42215c0800a[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sat Nov 12 12:24:48 2022 -0800
+
+    Completed HW3_Q1 code
+
+[33mcommit eeffef297e6d55e1379f19cbdbea25dff2687d68[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sat Nov 12 12:03:09 2022 -0800
+
+    Added Folder for HW3
+
+[33mcommit 6082ad881331f5f4c9714c458065e73fbdb67260[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Mon Nov 7 20:22:47 2022 -0800
+
+    Added code to compute local stress, global strain, and local strain from global stress for each lamina
+
+[33mcommit e025e9d9f9a3efcb326757ef7170046359e1b458[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Mon Nov 7 20:11:02 2022 -0800
+
+    Added code to calculate reduced transformed compliance matrix
+
+[33mcommit 8e3fbeda693ac96da8ecb9351232844b39f62371[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Mon Nov 7 19:46:36 2022 -0800
+
+    Added code to calculate global stress at for each ply
+
+[33mcommit 7c1a9345ab9448da221e2c24fb6ee8c8bc1f729b[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Mon Nov 7 19:41:33 2022 -0800
+
+    Added MALTAB file to compute global lamina stress
+
+[33mcommit 94423f40ba4afff8609131b84baf1174fc291a04[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Mon Nov 7 19:38:22 2022 -0800
+
+    Connected code thus far with main function
+
+[33mcommit dd62f6a717b1e6744cecf6a392e044b724cbed10[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Mon Nov 7 19:25:38 2022 -0800
+
+    Added code to solve for Qbar and main code run file
+
+[33mcommit 6d1a4537764f3afc73b4c98580d107ccffce7c08[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Mon Nov 7 19:19:52 2022 -0800
+
+    Added MALTAB file to solve for midplane deformation
+
+[33mcommit 1370aa7508a047e9589a19c9445d4acdbef6ba06[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Mon Nov 7 17:32:45 2022 -0800
+
+    Passing structure instead of variables
+
+[33mcommit 246d58983f86a9ef369e9677cba20bdc9c4c7151[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Thu Nov 3 21:26:51 2022 -0700
+
+    Added SFM code for Final project
+
+[33mcommit 5857d33dc965f18c4d4aa071373a319c9823c457[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Thu Nov 3 16:43:31 2022 -0700
+
+    Fixed Code to solve for moments
+
+[33mcommit 3345c8117b27cdb1289e786b56be705aec69df0b[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Wed Nov 2 17:22:28 2022 -0700
+
+    Added MATLAB file for HW Q8
+
+[33mcommit ba2ebeb0de2f353db7dc99b6c2f2e8d9f4739222[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Tue Nov 1 18:55:27 2022 -0700
+
+    Fixed Halpin-Tsai Equation
+
+[33mcommit 6d3b8961e498f1575c7d74afe0ca61a7219f56c0[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Wed Oct 26 13:33:58 2022 -0700
+
+    Cleaned up code
+
+[33mcommit 5913e9bb142f8bfe90dba99f8b9c8ccce1a71187[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Wed Oct 26 13:31:59 2022 -0700
+
+    Initialized vectors that change size
+
+[33mcommit 55ee43b2e4604cbaed5767ab785ccfa308317f91[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Wed Oct 26 13:27:28 2022 -0700
+
+    Added Halpin-Tsai Model for model comparison and plots of moduli vs fiber volume ratio
+
+[33mcommit c06196109a02f43b27b9f1684d8dc357e306f877[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Mon Oct 24 23:04:39 2022 -0700
+
+    Added Baseline  MATLAB code for HW2_Q7
+
+[33mcommit 4742a4f2c52353a6f1ac0d7619d8dd4c16e1530c[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sun Oct 23 14:28:10 2022 -0700
+
+    Added Reuss model to calculate mechanical properties
+
+[33mcommit 5a1b9c77931751403a4cde1a9b0dc078e6226b33[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sun Oct 23 14:09:24 2022 -0700
+
+    Added Voigt model to calculate mechanical properties
+
+[33mcommit 7263d4f10f82c2dc6a638bdecd73dc7bd61fecad[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sun Oct 23 13:46:50 2022 -0700
+
+    Added Square fiber model to compute mechanical properties
+
+[33mcommit c0c0d24f8c667154ebb636f61aad75066900bfb4[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sun Oct 23 13:04:13 2022 -0700
+
+    Added hybrid model to compute mechancial properties
+
+[33mcommit 9b83cfac190fc5aeb5776a2a6cfb59ad20130001[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Sun Oct 23 11:48:16 2022 -0700
+
+    Added code to solve for estimated parameter using Halpin-Tsai Equations
+
+[33mcommit cf7ef5ddf11dd690fe5939f0ac827068cfd4b70d[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Wed Oct 19 13:28:06 2022 -0700
+
+    Code for plotting transverse modulus as a function of fiber volume ratio
+
+[33mcommit 6f55897a6e085960ce1e69ed6f237a25c4a9d47c[m
+Author: Nick Agtual <nick.agtual@icloud.com>
+Date:   Tue Oct 11 11:07:28 2022 -0700
+
+    Adding all MATLAB files for AE 535 HW 1
+
+[33mcommit 90aef03319805f4570ee1511db6c44d52cb383c5[m
+Author: NickAgtual <115424206+NickAgtual@users.noreply.github.com>
+Date:   Sun Oct 9 17:04:33 2022 -0700
+
+    Initial commit

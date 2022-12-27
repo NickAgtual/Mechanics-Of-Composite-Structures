@@ -4,7 +4,7 @@ clear; clc; close all
 %% Reading Excel Data
 
 % File names for each load case
-fileNames = {'case1.xlsx', 'case2.xlsx', 'case3.xlsx'};
+fileNames = {'case1.xlsm', 'case2.xlsm', 'case3.xlsm'};
 stressStrainType = {'Longitudinal', 'Transverse', 'Shear'};
 
 % Initializing data cell array
